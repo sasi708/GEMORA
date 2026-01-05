@@ -1,21 +1,27 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-export default function ProductCard({product}){
+export default function ProductCard({ name, image, premium }) {
   return (
-    <div className="bg-white shadow rounded overflow-hidden">
-      <Link to={`/product/${product.id}`}>
-        <div className="h-40 bg-gray-50 flex items-center justify-center">
-          <img src={product.image} alt={product.title} className="max-h-36"/>
-        </div>
-      </Link>
-      <div className="p-4">
-        <h3 className="font-semibold text-sm">{product.title}</h3>
-        <div className="flex items-center justify-between mt-2">
-          <div className="font-bold text-gold">${product.price}</div>
-          <button className="text-xs px-3 py-1 border rounded">Buy</button>
-        </div>
-      </div>
+    <div className="relative rounded-xl bg-white p-4 shadow hover:shadow-lg transition">
+      {premium && (
+        <span className="absolute left-3 top-3 rounded-full bg-yellow-500 px-3 py-1 text-xs font-bold text-black">
+          Premium
+        </span>
+      )}
+
+      <img
+        src={image}
+        alt={name}
+        className="h-40 w-full rounded-lg object-cover"
+      />
+
+      <h3 className="mt-4 text-center font-semibold">{name}</h3>
+
+      <button className="mx-auto mt-4 block rounded-full bg-yellow-500 px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-400">
+        Contact Now
+      </button>
     </div>
-  )
+  );
 }
+

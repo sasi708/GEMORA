@@ -1,23 +1,25 @@
 import React from 'react'
 
-export default function Hero(){
+export default function Hero() {
   return (
-    <section className="container py-12">
-      <div className="bg-gradient-to-r from-gray-800 to-gray-700 rounded-lg text-white p-10 flex flex-col md:flex-row items-center gap-8">
-        <div className="md:flex-1">
-          <h1 className="text-3xl md:text-5xl font-bold">Discover the World's Finest Gems</h1>
-          <p className="mt-4 text-lg text-gray-200 max-w-xl">Curated gemstones from trusted sellers. Certified quality, worldwide shipping.</p>
-          <div className="mt-6">
-            <a href="/marketplace" className="bg-gold text-white px-6 py-3 rounded shadow inline-block">Shop Marketplace</a>
-          </div>
-        </div>
+    <section
+      className="mx-auto mt-6 max-w-7xl rounded-2xl bg-cover bg-center px-10 py-20 text-white"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('/assets/hero-bg.jpg')",
+      }}
+    >
+      <h1 className="text-4xl font-bold md:text-5xl">
+        Discover the World's <br /> Finest Gems
+      </h1>
 
-        <div className="md:flex-1">
-          <div className="w-full h-56 md:h-64 bg-white/5 rounded flex items-center justify-center">
-            <img src="/src/assets/hero-diamond.png" alt="diamond" className="max-h-56 object-contain"/>
-          </div>
-        </div>
-      </div>
+      <p className="mt-4 max-w-xl text-gray-200">
+        Your trusted marketplace for buying and selling precious stones.
+      </p>
+
+      <button className="mt-8 rounded-full bg-yellow-500 px-6 py-3 font-semibold text-black hover:bg-yellow-400">
+        Explore Gems
+      </button>
     </section>
-  )
+  );
 }
