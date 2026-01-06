@@ -1,19 +1,14 @@
-import { Routes, Route, useLocation } from "react-router-dom";
-
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-
+import { Routes, Route } from "react-router-dom";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
-function App() {
-  const location = useLocation();
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Market from "./pages/Market";
 
-  // pages where footer should be hidden
-  const hideFooterRoutes = ["/login", "/signup"];
-
+export default function App() {
   return (
     <>
       <Header />
@@ -21,14 +16,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Register />} />
-
+        <Route path="/register" element={<Register />} />
+        <Route path="/market" element={<Market />} />
       </Routes>
 
-      {/* Footer only for allowed pages */}
-      {!hideFooterRoutes.includes(location.pathname) && <Footer />}
+      <Footer />
     </>
   );
 }
-
-export default App;
