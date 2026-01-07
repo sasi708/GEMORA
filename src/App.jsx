@@ -8,7 +8,9 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Market from "./pages/Market";
 import GemDetails from "./pages/GemDetails";
-import SellerDetails from "./pages/SellerDetails"; // ✅ ADD THIS
+import SellerDetails from "./pages/SellerDetails"; 
+import SellGem from "./pages/SellGem";
+
 
 export default function App() {
   return (
@@ -29,6 +31,10 @@ export default function App() {
 
         {/* SELLER DETAILS */}
         <Route path="/seller/:sellerId" element={<SellerDetails />} />
+
+        {/* SELL GEM DETAILS */}
+        <Route path="/sell" element={<SellGem />} />
+
       </Routes>
 
       <Footer />
