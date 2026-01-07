@@ -7,6 +7,8 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Market from "./pages/Market";
+import GemDetails from "./pages/GemDetails";
+import SellerDetails from "./pages/SellerDetails"; // ✅ ADD THIS
 
 export default function App() {
   return (
@@ -14,10 +16,19 @@ export default function App() {
       <Header />
 
       <Routes>
+        {/* HOME */}
         <Route path="/" element={<Home />} />
+
+        {/* AUTH */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        {/* MARKET */}
         <Route path="/market" element={<Market />} />
+        <Route path="/market/:id" element={<GemDetails />} />
+
+        {/* SELLER DETAILS */}
+        <Route path="/seller/:sellerId" element={<SellerDetails />} />
       </Routes>
 
       <Footer />
