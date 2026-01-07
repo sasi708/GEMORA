@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Instruments from "./pages/Instruments";
 import InstrumentDetails from "./pages/InstrumentDetails";
+import News from "./pages/News"; 
 
 
 
@@ -22,6 +23,8 @@ function App() {
       <Header />
 
       <Routes>
+        <Route path="/news" element={<News />} />
+
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Register />} />
