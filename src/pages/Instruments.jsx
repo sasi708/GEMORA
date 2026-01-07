@@ -66,8 +66,8 @@ export default function Instruments() {
     <input
   type="range"
   min="0"
-  max="9999999"
-  step="99"
+  max="300000"
+  step="1000"
   value={price}
   onChange={(e) => setPrice(e.target.value)}
   className="w-full accent-yellow-500"
@@ -75,7 +75,7 @@ export default function Instruments() {
 
 <div className="mt-2 flex justify-between text-xs text-gray-500">
   <span>Rs. {Number(price).toLocaleString()}</span>
-  <span>Rs. 9,999,990.00</span>
+  <span>Rs. 300,000.00</span>
 </div>
 </div>
   {/* Select Country */}
