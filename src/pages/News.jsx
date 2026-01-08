@@ -1,5 +1,6 @@
 import React from "react";
 
+//create news 
 const newsData = [
   {
     id: 1,
