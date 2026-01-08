@@ -9,6 +9,7 @@ import InstrumentDetails from "./pages/InstrumentDetails";
 import ConfirmOrder from "./pages/ConfirmOrder";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import News from "./pages/News";  
 
 function App() {
   const location = useLocation();
@@ -21,7 +22,7 @@ function App() {
       <Header />
 
       <Routes>
-        <Route path="/news" element={<News />} />
+        <Route path="/News" element={<News />} />
 
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
