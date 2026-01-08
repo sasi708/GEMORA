@@ -5,6 +5,9 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Instruments from "./pages/Instruments";
 import InstrumentDetails from "./pages/InstrumentDetails";
+import ConfirmOrder from "./pages/ConfirmOrder";
+
+
 
 
 
@@ -26,11 +29,15 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Register />} />
         <Route path="/instruments" element={<Instruments />} />
+        <Route path="/instrument/:id" element={<InstrumentDetails />} />
+        <Route path="/confirm-order" element={<ConfirmOrder />} />
         <Route
           path="/instrument/:id" element={
           <div className="min-h-screen bg-white">
            <InstrumentDetails />
           </div>
+          
+
         }
 />
       </Routes>
