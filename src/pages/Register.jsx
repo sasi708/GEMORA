@@ -1,8 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Register() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
         
         <h2 className="text-2xl font-bold text-center mb-6">
@@ -66,6 +67,13 @@ export default function Register() {
         >
           Register
         </button>
+
+        <p className="mt-6 text-center text-sm text-gray-600">
+          Already have an account?{" "}
+          <Link to="/login" className="font-semibold text-yellow-600 hover:underline">
+            Login
+          </Link>
+        </p>
 
       </div>
     </div>

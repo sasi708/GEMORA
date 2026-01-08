@@ -1,44 +1,25 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
-export default function ProductCard({ name, image, premium }) {
+export default function ProductCard({ id, name, image, weight }) {
   return (
-    <div className="group relative rounded-2xl border bg-white p-4 shadow-sm transition hover:shadow-lg">
+    <div className="rounded-xl border bg-white p-4 text-center shadow-sm hover:shadow-md transition">
       
-      {/* PREMIUM BADGE */}
-      {premium && (
-        <span className="absolute left-3 top-3 z-10 rounded-full bg-yellow-500 px-3 py-1 text-xs font-bold text-black">
-          Premium
-        </span>
-      )}
+      {/* IMAGE ONLY – NO EXTRA FRAME */}
+      <img
+        src={image}
+        alt={name}
+        className="mx-auto h-40 w-full object-contain"
+      />
 
-      {/* IMAGE WRAPPER (IMPORTANT FIX) */}
-      <div className="flex h-48 items-center justify-center overflow-hidden rounded-xl bg-gray-100">
-        <img
-          src={image}
-          alt={name}
-          className="
-            h-full
-            w-full
-            object-contain
-            transition
-            duration-300
-            group-hover:scale-105
-          "
-          onError={(e) => {
-            e.target.src = "/gems/emerald-diamond.jpg";
-          }}
-        />
-      </div>
+      <h3 className="mt-3 text-sm font-semibold">{name}</h3>
+      <p className="text-xs text-gray-500">{weight} ct</p>
 
-      {/* TITLE */}
-      <h3 className="mt-4 text-center text-sm font-semibold text-gray-900">
-        {name}
-      </h3>
-
-      {/* CTA */}
-      <button className="mx-auto mt-4 block rounded-full bg-yellow-500 px-5 py-2 text-sm font-semibold text-black transition hover:bg-yellow-400">
+      <Link
+        to={`/market/${id}`}
+        className="mt-3 inline-block rounded-full bg-yellow-500 px-4 py-2 text-xs font-semibold hover:bg-yellow-400"
+      >
         Contact Now
-      </button>
+      </Link>
     </div>
   );
 }
