@@ -54,7 +54,7 @@ export default function Register() {
           </label>
           <input
             type="text"
-            placeholder="Enter mobile number"
+            placeholder="Enter Mobile number"
             className="w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400"
           />
         </div>

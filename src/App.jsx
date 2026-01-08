@@ -1,11 +1,25 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Instruments from "./pages/Instruments";
+import InstrumentDetails from "./pages/InstrumentDetails";
+import ConfirmOrder from "./pages/ConfirmOrder";
+
+
+
+
+
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Register from "./pages/Register";
 
 function App() {
+  const location = useLocation();
+
+  // pages where footer should be hidden
+  const hideFooterRoutes = ["/login", "/signup"];
+
   return (
     <>
       <Header />
@@ -13,11 +27,23 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/signup" element={<Register />} />
+        <Route path="/instruments" element={<Instruments />} />
+        <Route path="/instrument/:id" element={<InstrumentDetails />} />
+        <Route path="/confirm-order" element={<ConfirmOrder />} />
+        <Route
+          path="/instrument/:id" element={
+          <div className="min-h-screen bg-white">
+           <InstrumentDetails />
+          </div>
+          
 
+        }
+/>
       </Routes>
 
-      
+      {/* Footer only for allowed pages */}
+      {!hideFooterRoutes.includes(location.pathname) && <Footer />}
     </>
   );
 }

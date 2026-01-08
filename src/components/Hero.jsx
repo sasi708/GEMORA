@@ -1,25 +1,39 @@
-import React from 'react'
-
 export default function Hero() {
   return (
-    <section
-      className="mx-auto mt-6 max-w-7xl rounded-2xl bg-cover bg-center px-10 py-20 text-white"
-      style={{
-        backgroundImage:
-          "linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('/assets/hero-bg.jpg')",
-      }}
-    >
-      <h1 className="text-4xl font-bold md:text-5xl">
-        Discover the World's <br /> Finest Gems
-      </h1>
+    <section className="mx-auto max-w-7xl px-6 py-12">
+      <div
+        className="
+          relative
+          rounded-3xl
+          overflow-hidden
+          bg-cover
+          bg-center
+          p-12
+          md:p-16
+          text-white
+        "
+        style={{
+          backgroundImage: "url('/gems/hero-gem.png')",
+        }}
+      >
+        {/* DARK OVERLAY */}
+        <div className="absolute inset-0 bg-black/50"></div>
 
-      <p className="mt-4 max-w-xl text-gray-200">
-        Your trusted marketplace for buying and selling precious stones.
-      </p>
+        {/* CONTENT */}
+        <div className="relative z-10 max-w-xl">
+          <h1 className="text-5xl font-bold leading-tight">
+            Discover the World's <br /> Finest Gems
+          </h1>
 
-      <button className="mt-8 rounded-full bg-yellow-500 px-6 py-3 font-semibold text-black hover:bg-yellow-400">
-        Explore Gems
-      </button>
+          <p className="mt-4 text-lg text-gray-200">
+            Your trusted marketplace for buying and selling precious stones.
+          </p>
+
+          <button className="mt-6 rounded-full bg-yellow-500 px-8 py-3 font-semibold text-black hover:bg-yellow-400 transition">
+            Explore Gems
+          </button>
+        </div>
+      </div>
     </section>
   );
 }
