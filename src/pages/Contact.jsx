@@ -1,4 +1,5 @@
 import React from 'react';
+import { PhoneIcon, EnvelopeIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import { PhoneIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import showmyImage from '../assets/showmy.jpg';
 import PasinduImage from '../assets/Pasindu.jpg';
@@ -43,6 +44,10 @@ export default function Contact() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section with Background Image */}
+      <div className="relative h-96 bg-cover bg-center" style={{backgroundImage: "url('https://empathizerpk.com/wp-content/uploads/2022/04/Contact-us-Main-Banner-1.jpg')"}}>
+        <div className="relative max-w-7xl mx-auto px-6 h-full flex items-end justify-start pb-16">
+          <div className="text-black text-left">
+            <h1 className="text-5xl font-bold mb-7">Contact Details</h1>
       <div className="relative h-96 bg-cover bg-center" style={{backgroundImage: "url('https://www.shutterstock.com/image-photo/hand-pushing-social-network-button-260nw-235150300.jpg')"}}>
         <div className="relative max-w-7xl mx-auto px-6 h-full flex items-end justify-start pb-16">
           <div className="text-black text-left">
@@ -68,11 +73,21 @@ export default function Contact() {
         
         {/* Founders Section */}
         <div className="mb-16">
+          <h2 className="text-4xl font-bold text-left text-gray-900 mb-4">Founders of <span className="text-yellow-500">GEMORA</span></h2>
+          
           <h2 className="text-4xl font-bold text-left text-gray-900 mb-8">Founders of <span className="text-yellow-500">GEMORA</span></h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
             {founders.map((founder, index) => (
               <div key={index} className="text-center group">
+                <div className="relative mb-4 mx-auto w-32 h-32">
+                  <img
+                    src={founder.image}
+                    alt={founder.name}
+                    className="w-full h-full rounded-full object-cover border-4 border-yellow-500 shadow-lg"
+                  />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">{founder.name}</h3>
                 <div className="relative mb-4 mx-auto w-32 h-32 overflow-hidden rounded-full border-4 border-yellow-500 shadow-lg">
                   <img
                     src={founder.image}
@@ -99,6 +114,8 @@ export default function Contact() {
             ))}
           </div>
         </div>
+
+              </div>
       </div>
     </div>
   );
