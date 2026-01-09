@@ -6,10 +6,7 @@ import Register from "./pages/Register";
 import Instruments from "./pages/Instruments";
 import InstrumentDetails from "./pages/InstrumentDetails";
 import ConfirmOrder from "./pages/ConfirmOrder";
-
-
-
-
+import Contact from "./pages/Contact";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -31,15 +28,7 @@ function App() {
         <Route path="/instruments" element={<Instruments />} />
         <Route path="/instrument/:id" element={<InstrumentDetails />} />
         <Route path="/confirm-order" element={<ConfirmOrder />} />
-        <Route
-          path="/instrument/:id" element={
-          <div className="min-h-screen bg-white">
-           <InstrumentDetails />
-          </div>
-          
-
-        }
-/>
+        <Route path="/contact" element={<Contact />} />
       </Routes>
 
       {/* Footer only for allowed pages */}
