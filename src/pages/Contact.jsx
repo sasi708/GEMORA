@@ -1,5 +1,6 @@
 import React from 'react';
 import { PhoneIcon, EnvelopeIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { PhoneIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import showmyImage from '../assets/showmy.jpg';
 import PasinduImage from '../assets/Pasindu.jpg';
 import banukaImage from '../assets/banuka.jpg';
@@ -47,6 +48,23 @@ export default function Contact() {
         <div className="relative max-w-7xl mx-auto px-6 h-full flex items-end justify-start pb-16">
           <div className="text-black text-left">
             <h1 className="text-5xl font-bold mb-7">Contact Details</h1>
+      <div className="relative h-96 bg-cover bg-center" style={{backgroundImage: "url('https://www.shutterstock.com/image-photo/hand-pushing-social-network-button-260nw-235150300.jpg')"}}>
+        <div className="relative max-w-7xl mx-auto px-6 h-full flex items-end justify-start pb-16">
+          <div className="text-black text-left">
+            <h1 className="text-5xl font-bold mb-7 text-black">Contact Details</h1>
+            <div className="flex space-x-6">
+              <div className="flex items-center text-black">
+                <PhoneIcon className="h-6 w-6 mr-2" />
+                <span>Phone</span>
+              </div>
+              <div className="flex items-center text-black">
+                <span>Email</span>
+              </div>
+              <div className="flex items-center text-black">
+                <MapPinIcon className="h-6 w-6 mr-2" />
+                <span>Mobile</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -57,6 +75,7 @@ export default function Contact() {
         <div className="mb-16">
           <h2 className="text-4xl font-bold text-left text-gray-900 mb-4">Founders of <span className="text-yellow-500">GEMORA</span></h2>
           
+          <h2 className="text-4xl font-bold text-left text-gray-900 mb-8">Founders of <span className="text-yellow-500">GEMORA</span></h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
             {founders.map((founder, index) => (
@@ -69,6 +88,14 @@ export default function Contact() {
                   />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-1">{founder.name}</h3>
+                <div className="relative mb-4 mx-auto w-32 h-32 overflow-hidden rounded-full border-4 border-yellow-500 shadow-lg">
+                  <img
+                    src={founder.image}
+                    alt={founder.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{founder.name}</h3>
                 
                 <div className="space-y-2">
                   <div className="flex items-center justify-center text-sm text-gray-700">
@@ -89,6 +116,7 @@ export default function Contact() {
         </div>
 
               </div>
+      </div>
     </div>
   );
 }
