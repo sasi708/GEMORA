@@ -22,7 +22,7 @@ export default function Market() {
       <div className="mb-8 flex justify-between items-center">
         <h1 className="text-3xl font-bold">Gem Marketplace</h1>
         <Link
-  to="/sell"
+  to="/sell-gem"
   className="rounded-full bg-red-600 px-5 py-2 text-sm font-semibold text-white hover:bg-red-500"
 >
   Sell Your Gem
