@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Pages
 import Home from "./pages/Home";
@@ -23,18 +24,87 @@ export default function App() {
       <Header />
 
       <Routes>
+        {/* ✅ Public */}
         <Route path="/" element={<Home />} />
-        <Route path="/market" element={<Market />} />
-        <Route path="/market/:id" element={<GemDetails />} />
-        <Route path="/sell-gem" element={<SellGem />} />
-        <Route path="/seller/:sellerId" element={<SellerDetails />} />
-        <Route path="/news" element={<News />} />
-        <Route path="/instruments" element={<Instruments />} />
-        <Route path="/instrument/:id" element={<InstrumentDetails />} />
-        <Route path="/confirm-order" element={<ConfirmOrder />} />
-        <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        {/* ✅ Protected */}
+        <Route
+          path="/market"
+          element={
+            <ProtectedRoute>
+              <Market />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/market/:id"
+          element={
+            <ProtectedRoute>
+              <GemDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sell-gem"
+          element={
+            <ProtectedRoute>
+              <SellGem />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/seller/:sellerId"
+          element={
+            <ProtectedRoute>
+              <SellerDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/news"
+          element={
+            <ProtectedRoute>
+              <News />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/instruments"
+          element={
+            <ProtectedRoute>
+              <Instruments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/instrument/:id"
+          element={
+            <ProtectedRoute>
+              <InstrumentDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/confirm-order"
+          element={
+            <ProtectedRoute>
+              <ConfirmOrder />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <ProtectedRoute>
+              <Contact />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* optional */}
+        <Route path="*" element={<Home />} />
       </Routes>
 
       <Footer />
