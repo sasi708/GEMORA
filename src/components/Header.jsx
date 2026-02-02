@@ -15,7 +15,7 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // 🔐 auth state sync (FINAL)
+  // 🔐 auth state sync
   useEffect(() => {
     const syncAuth = () => {
       const token = localStorage.getItem("token");
@@ -44,6 +44,11 @@ export default function Header() {
     navigate("/");
   };
 
+  // avatar helpers
+  const profilePic =
+    user?.profilePic || user?.avatar || user?.image || user?.photo || null;
+  const firstLetter = (user?.name || "U").trim().charAt(0).toUpperCase();
+
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
@@ -65,14 +70,33 @@ export default function Header() {
 
         {/* NAV */}
         <nav className="hidden gap-8 md:flex text-sm font-medium text-gray-700">
-          <Link to="/" className="hover:text-yellow-500">Home</Link>
+          <Link to="/" className="hover:text-yellow-500">
+            Home
+          </Link>
 
           {logged && (
             <>
-              <Link to="/market" className="hover:text-yellow-500">Market</Link>
-              <Link to="/instruments" className="hover:text-yellow-500">Instruments</Link>
-              <Link to="/news" className="hover:text-yellow-500">News</Link>
-              <Link to="/contact" className="hover:text-yellow-500">Contact</Link>
+              <Link to="/market" className="hover:text-yellow-500">
+                Market
+              </Link>
+              <Link to="/instruments" className="hover:text-yellow-500">
+                Instruments
+              </Link>
+              <Link to="/news" className="hover:text-yellow-500">
+                News
+              </Link>
+              <Link to="/contact" className="hover:text-yellow-500">
+                Contact
+              </Link>
+
+              {/* ✅ Profile Link */}
+              <Link to="/profile" className="hover:text-yellow-500">
+                Profile
+              </Link>
+
+              <Link to="/admin/dashboard" className="hover:text-yellow-500">
+                Admin
+              </Link>
             </>
           )}
         </nav>
@@ -97,9 +121,28 @@ export default function Header() {
             </>
           ) : (
             <>
-              <span className="hidden sm:block text-sm font-medium text-gray-700">
-                Hi, {user?.name || "User"}
-              </span>
+              {/* Avatar + name */}
+              <Link
+                to="/profile"
+                className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-yellow-50"
+                title="Go to Profile"
+              >
+                {profilePic ? (
+                  <img
+                    src={profilePic}
+                    alt="profile"
+                    className="h-9 w-9 rounded-full object-cover border"
+                  />
+                ) : (
+                  <div className="h-9 w-9 rounded-full bg-yellow-500 text-white flex items-center justify-center font-bold">
+                    {firstLetter}
+                  </div>
+                )}
+
+                <span className="hidden sm:block text-sm font-medium text-gray-700">
+                  Hi, {user?.name || "User"}
+                </span>
+              </Link>
 
               <button
                 onClick={handleLogout}
