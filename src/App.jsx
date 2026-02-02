@@ -30,6 +30,8 @@ import AdminNews from "./pages/AdminNews";
 import AdminInstruments from "./pages/AdminInstruments";
 import AdminSettings from "./pages/AdminSettings";
 import AdminCertificates from "./pages/AdminCertificates";
+import Profile from "./pages/Profile";
+
 
 
 export default function App() {
@@ -170,6 +172,8 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/profile" element={<Profile />} />
 
 
 
