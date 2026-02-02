@@ -1,12 +1,15 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api', 
+  // Use 127.0.0.1 to match your backend test
+  baseURL: 'http://127.0.0.1:5000/api', 
 });
 
+// Automatically add the Token to every request
 API.interceptors.request.use((req) => {
-  if (localStorage.getItem('token')) {
-    req.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+  const token = localStorage.getItem('token');
+  if (token) {
+    req.headers.Authorization = `Bearer ${token}`;
   }
   return req;
 });

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import API from "../api"; // We use our custom API bridge
 
 export default function Login() {
   const navigate = useNavigate();
@@ -14,30 +14,50 @@ export default function Login() {
     setForm((p) => ({ ...p, [name]: value }));
   };
 
+  // The Smoke Test Function (You can delete this later)
+  const handleTest = async () => {
+    try {
+      console.log("Testing connection...");
+      const res = await API.get("/health"); 
+      alert("✅ SUCCESS: " + res.data.message);
+    } catch (error) {
+      console.error("Connection failed:", error);
+      alert("❌ ERROR: Cannot connect to Backend. Check Console (F12).");
+    }
+  };
+
   const handleLogin = async () => {
     setMsg("");
 
     if (!form.email || !form.password) {
-      setMsg("Email සහ Password අනිවාර්යයි.");
+      setMsg("Email and Password are required.");
       return;
     }
 
     try {
       setLoading(true);
 
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/auth/login`,
-        form
-      );
+      // 1. Send Login Request
+      const res = await API.post("/auth/login", form);
 
-      // ✅ save token + user
-      if (res.data?.token) localStorage.setItem("token", res.data.token);
-      if (res.data?.user) localStorage.setItem("user", JSON.stringify(res.data.user));
+      // 2. Save Token & User Info
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
+        
+        if (res.data?.user) {
+          localStorage.setItem("user", JSON.stringify(res.data.user));
+        }
 
-      setMsg("✅ Login success!");
-      navigate("/"); // home
+        setMsg("✅ Login success!");
+        
+        // 3. Redirect to Admin Dashboard
+        setTimeout(() => {
+          navigate("/admin/dashboard"); 
+        }, 500);
+      }
+
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setMsg(err.response?.data?.message || "❌ Login failed");
     } finally {
       setLoading(false);
@@ -86,7 +106,16 @@ export default function Login() {
         </div>
 
         {/* Message */}
-        {msg && <p className="mb-4 text-center text-sm text-gray-700">{msg}</p>}
+        {msg && <p className="mb-4 text-center text-sm font-bold text-gray-700">{msg}</p>}
+
+        {/* Test Button (Keep until login works) */}
+        <button 
+          type="button"
+          onClick={handleTest}
+          className="mb-4 w-full bg-purple-600 text-white py-2 rounded-xl font-bold hover:bg-purple-700 transition"
+        >
+          TEST SERVER CONNECTION
+        </button>
 
         <button
           type="button"
