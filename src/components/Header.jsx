@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+
+
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [logged, setLogged] = useState(false);
@@ -73,6 +75,7 @@ export default function Header() {
               <Link to="/instruments" className="hover:text-yellow-500">Instruments</Link>
               <Link to="/news" className="hover:text-yellow-500">News</Link>
               <Link to="/contact" className="hover:text-yellow-500">Contact</Link>
+              <Link to="/admin/dashboard" className="hover:text-yellow-500">Admin</Link>
             </>
           )}
         </nav>
