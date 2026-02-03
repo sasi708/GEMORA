@@ -1,36 +1,20 @@
 import React, { useEffect, useState } from "react";
-import Hero from "../components/Hero";        // 👈 Keeping your Hero
-import ProductGrid from "../components/ProductGrid"; // 👈 Keeping your Grid
-import API from "../api"; 
+import { useNavigate } from "react-router-dom";
+import Hero from "../components/Hero";
+import API from "../api";
 
 export default function Home() {
-  const [featuredGems, setFeaturedGems] = useState([]);
-  const [premiumGems, setPremiumGems] = useState([]);
+  const [gems, setGems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await API.get("/tools"); // Fetching from DB
-        
-        // Transform DB data to match what ProductGrid expects
-        // (DB uses '_id' and 'imageUrl', your UI uses 'id' and 'image')
-        const formattedData = res.data.map(item => ({
-          id: item._id,
-          name: item.name,
-          image: item.imageUrl, // 👈 Mapping DB image to UI prop
-          price: item.price,    // Passing price
-          category: item.category,
-          // If your grid expects 'weight', we can mock it or use price
-          weight: item.price + " USD" 
-        }));
-
-        // Split data for the two sections (just as an example)
-        setFeaturedGems(formattedData.slice(0, 4)); // First 4
-        setPremiumGems(formattedData.slice(4, 8));  // Next 4 (or empty if not enough)
-        
+        const res = await API.get("/gems");
+        setGems(res.data.slice(0, 8)); // Show latest 8 gems
       } catch (error) {
-        console.error("Failed to load products", error);
+        console.error("Failed to load gems", error);
       } finally {
         setLoading(false);
       }
@@ -41,31 +25,63 @@ export default function Home() {
 
   return (
     <>
-      {/* 1. KEEPING YOUR HERO */}
       <Hero />
 
-      {/* 2. FEATURED SECTION (Dynamic Data) */}
-      <section className="mx-auto max-w-7xl px-6 py-14">
-        <h2 className="mb-8 text-center text-2xl font-bold">
-          Featured Gems
-        </h2>
-        {loading ? (
-          <p className="text-center text-gray-500">Loading...</p>
-        ) : (
-          <ProductGrid gems={featuredGems} />
-        )}
-      </section>
+      {/* Featured Gems Section */}
+      <section className="py-16 bg-white">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <h2 className="text-3xl font-bold text-slate-900 uppercase tracking-tighter">
+                New Arrivals
+              </h2>
+              <p className="text-slate-500 mt-2">
+                The latest additions to our exclusive collection.
+              </p>
+            </div>
+            <button
+              onClick={() => navigate("/market")}
+              className="text-sm font-bold text-yellow-600 hover:underline"
+            >
+              View All Gems →
+            </button>
+          </div>
 
-      {/* 3. PREMIUM SECTION (Dynamic Data) */}
-      <section className="mx-auto max-w-7xl px-6 py-14">
-        <h2 className="mb-8 text-center text-2xl font-bold">
-          Premium Listings
-        </h2>
-        {loading ? (
-          <p className="text-center text-gray-500">Loading...</p>
-        ) : (
-          <ProductGrid gems={premiumGems} />
-        )}
+          {loading ? (
+            <p className="text-center text-gray-500 py-10">Loading gems...</p>
+          ) : (
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+              {gems.map((gem) => (
+                <div
+                  key={gem._id}
+                  className="group cursor-pointer"
+                  onClick={() => navigate(`/gems/${gem._id}`)}
+                >
+                  <div className="relative aspect-4/5 overflow-hidden rounded-2xl bg-gray-100 shadow-sm border border-gray-100">
+                    <img
+                      src={gem.imageUrl}
+                      alt={gem.name}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute top-3 right-3 bg-white/90 px-2 py-1 rounded text-[10px] font-bold uppercase shadow-sm">
+                      {gem.origin}
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <h3 className="text-sm font-bold text-slate-800">{gem.name}</h3>
+                    <p className="text-xs text-slate-400 mt-1">
+                      {gem.carat} Carats · {gem.clarity}
+                    </p>
+                    <p className="mt-2 text-sm font-bold text-orange-600">
+                      Rs. {gem.price?.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </section>
     </>
   );

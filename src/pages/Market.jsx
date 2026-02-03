@@ -1,19 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
-import gems from "../data/gems";
 import { Link } from "react-router-dom";
-
+import API from "../api";
 
 export default function Market() {
+  const [gems, setGems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [maxWeight, setMaxWeight] = useState(100);
   const [selectedType, setSelectedType] = useState("All");
   const [selectedCountry, setSelectedCountry] = useState("All");
 
+  useEffect(() => {
+    const fetchGems = async () => {
+      try {
+        const res = await API.get("/gems");
+        setGems(res.data);
+      } catch (err) {
+        console.error("Error fetching gems:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchGems();
+  }, []);
+
   const filteredGems = gems.filter((gem) => {
     return (
-      gem.weight <= maxWeight &&
-      (selectedType === "All" || gem.type === selectedType) &&
-      (selectedCountry === "All" || gem.country === selectedCountry)
+      gem.carat <= maxWeight &&
+      (selectedType === "All" || gem.clarity === selectedType) &&
+      (selectedCountry === "All" || gem.origin === selectedCountry)
     );
   });
 
@@ -22,15 +37,17 @@ export default function Market() {
       <div className="mb-8 flex justify-between items-center">
         <h1 className="text-3xl font-bold">Gem Marketplace</h1>
         <Link
-  to="/sell-gem"
-  className="rounded-full bg-red-600 px-5 py-2 text-sm font-semibold text-white hover:bg-red-500"
->
-  Sell Your Gem
-</Link>
-
+          to="/sell-gem"
+          className="rounded-full bg-red-600 px-5 py-2 text-sm font-semibold text-white hover:bg-red-500"
+        >
+          Sell Your Gem
+        </Link>
       </div>
 
-      <div className="grid grid-cols-12 gap-8">
+      {loading ? (
+        <p className="text-center py-10">Loading gems...</p>
+      ) : (
+        <div className="grid grid-cols-12 gap-8">
         {/* FILTERS */}
         <aside className="col-span-12 md:col-span-3 rounded-xl border p-5 space-y-6">
           <h3 className="text-lg font-semibold">Filters</h3>
@@ -85,11 +102,16 @@ export default function Market() {
 
         {/* PRODUCTS */}
         <div className="col-span-12 md:col-span-9 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredGems.map((gem) => (
-            <ProductCard key={gem.id} {...gem} />
-          ))}
+          {filteredGems.length === 0 ? (
+            <p className="col-span-full text-center py-10 text-gray-500">No gems found</p>
+          ) : (
+            filteredGems.map((gem) => (
+              <ProductCard key={gem._id} {...gem} />
+            ))
+          )}
         </div>
       </div>
+      )}
     </section>
   );
 }
