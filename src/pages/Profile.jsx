@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-
-const API = "http://localhost:5000";
+import API from "../api";
 
 export default function Profile() {
   const token = localStorage.getItem("token");
@@ -14,6 +13,7 @@ export default function Profile() {
   const [picFile, setPicFile] = useState(null);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [orders, setOrders] = useState([]);
 
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
@@ -37,31 +37,46 @@ export default function Profile() {
     const load = async () => {
       try {
         setErr("");
-        const res = await fetch(`${API}/api/users/profile`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data?.message || "Failed to load profile");
+        const res = await API.get("/auth/profile");
 
-        setName(data.name || "");
-        setEmail(data.email || "");
-        setProfilePic(data.profilePic || "");
+        // 🔹 This is the "Pre-fill" magic - extract from data.user
+        if (res.data && res.data.user) {
+          setName(res.data.user.name || "");
+          setEmail(res.data.user.email || "");
+          setProfilePic(res.data.user.profilePic || "");
 
-        // keep localStorage in sync
-        const newStored = {
-          ...(initialUser || {}),
-          name: data.name,
-          email: data.email,
-          profilePic: data.profilePic || "",
-        };
-        localStorage.setItem("user", JSON.stringify(newStored));
-        window.dispatchEvent(new Event("storage"));
+          // keep localStorage in sync
+          const newStored = {
+            ...(initialUser || {}),
+            name: res.data.user.name,
+            email: res.data.user.email,
+            profilePic: res.data.user.profilePic || "",
+          };
+          localStorage.setItem("user", JSON.stringify(newStored));
+          window.dispatchEvent(new Event("storage"));
+        }
       } catch (e) {
-        setErr(e.message);
+        console.error("Profile load error:", e);
+        setErr(e.response?.data?.message || e.message);
       }
     };
 
-    if (token) load();
+    const loadOrders = async () => {
+      try {
+        const res = await API.get("/orders/myorders");
+        
+        // Safety check: Your controller returns res.data which is an array or { orders: [...] }
+        const ordersData = Array.isArray(res.data) ? res.data : res.data.orders || res.data.data || [];
+        setOrders(ordersData);
+      } catch (e) {
+        console.error("Order fetch failed", e);
+      }
+    };
+
+    if (token) {
+      load();
+      loadOrders();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -108,23 +123,17 @@ export default function Profile() {
       const fd = new FormData();
       fd.append("profilePic", picFile);
 
-      const res = await fetch(`${API}/api/users/upload-profile-pic`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: fd,
-      });
+      const res = await API.post("/auth/upload-profile-pic", fd);
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.message || "Upload failed");
-
-      setProfilePic(data.profilePic);
-      saveToLocalStorage({ profilePic: data.profilePic });
+      setProfilePic(res.data.profilePic);
+      saveToLocalStorage({ profilePic: res.data.profilePic });
       window.dispatchEvent(new Event("storage"));
 
       setMsg("Profile picture updated ✅");
       setPicFile(null);
     } catch (e) {
-      setErr(e.message);
+      console.error("Upload error:", e);
+      setErr(e.response?.data?.message || e.message);
     } finally {
       setLoading(false);
     }
@@ -136,24 +145,15 @@ export default function Profile() {
       setErr("");
       setMsg("");
 
-      const res = await fetch(`${API}/api/users/profile`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ name, email }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.message || "Update failed");
+      await API.put("/auth/profile", { name, email });
 
       saveToLocalStorage({ name, email });
       window.dispatchEvent(new Event("storage"));
 
       setMsg("Profile updated ✅");
     } catch (e) {
-      setErr(e.message);
+      console.error("Update error:", e);
+      setErr(e.response?.data?.message || e.message);
     } finally {
       setLoading(false);
     }
@@ -171,23 +171,14 @@ export default function Profile() {
       setErr("");
       setMsg("");
 
-      const res = await fetch(`${API}/api/users/change-password`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ oldPassword, newPassword }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.message || "Password change failed");
+      await API.put("/auth/change-password", { oldPassword, newPassword });
 
       setOldPassword("");
       setNewPassword("");
       setMsg("Password changed ✅");
     } catch (e) {
-      setErr(e.message);
+      console.error("Password change error:", e);
+      setErr(e.response?.data?.message || e.message);
     } finally {
       setLoading(false);
     }
@@ -397,7 +388,51 @@ export default function Profile() {
             <div className="text-xs text-slate-400">
               Tip: If you update your email, make sure it’s one you can access.
             </div>
-          </div>
+            {/* My Orders Section */}
+            <div className="rounded-2xl border bg-white p-6 shadow-sm">
+              <h2 className="text-lg font-semibold text-slate-900">
+                My Orders
+              </h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Track your order history and status.
+              </p>
+
+              <div className="mt-5 space-y-3">
+                {orders.length === 0 ? (
+                  <p className="text-sm text-slate-400">No orders yet.</p>
+                ) : (
+                  orders.map((order) => (
+                    <div
+                      key={order._id}
+                      className="rounded-lg border p-4 hover:bg-slate-50 transition"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <p className="text-sm font-semibold text-slate-900">
+                            Order #{order._id.slice(-6)}
+                          </p>
+                          <p className="text-xs text-slate-500 mt-1">
+                            {order.orderItems?.length || 0} item(s) • Rs.{" "}
+                            {order.totalPrice?.toLocaleString()}
+                          </p>
+                        </div>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-bold ${
+                            order.status === "Pending"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : order.status === "Delivered"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-blue-100 text-blue-700"
+                          }`}
+                        >
+                          {order.status || "Pending"}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>          </div>
         </div>
       </div>
     </div>
