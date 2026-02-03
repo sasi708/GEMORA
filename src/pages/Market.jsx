@@ -1,20 +1,26 @@
-import { useState, useEffect } from "react";
-import ProductCard from "../components/ProductCard";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../api";
 
 export default function Market() {
   const [gems, setGems] = useState([]);
+  const [filteredGems, setFilteredGems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [maxWeight, setMaxWeight] = useState(100);
-  const [selectedType, setSelectedType] = useState("All");
-  const [selectedCountry, setSelectedCountry] = useState("All");
+  const navigate = useNavigate();
+
+  // Filter States
+  const [search, setSearch] = useState("");
+  const [maxPrice, setMaxPrice] = useState(1000000);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const categories = ["All", "Sapphire", "Ruby", "Emerald", "Alexandrite", "Topaz", "Spinel"];
 
   useEffect(() => {
     const fetchGems = async () => {
       try {
         const res = await API.get("/gems");
         setGems(res.data);
+        setFilteredGems(res.data);
       } catch (err) {
         console.error("Error fetching gems:", err);
       } finally {
@@ -24,94 +30,132 @@ export default function Market() {
     fetchGems();
   }, []);
 
-  const filteredGems = gems.filter((gem) => {
-    return (
-      gem.carat <= maxWeight &&
-      (selectedType === "All" || gem.clarity === selectedType) &&
-      (selectedCountry === "All" || gem.origin === selectedCountry)
-    );
-  });
+  // 🔹 Advanced Filter Logic
+  useEffect(() => {
+    const results = gems.filter((gem) => {
+      const matchesSearch = gem.name.toLowerCase().includes(search.toLowerCase());
+      const matchesPrice = gem.price <= maxPrice;
+      // Checks if 'All' is selected, or if the gem name contains the category keyword
+      const matchesCategory = 
+        selectedCategory === "All" || 
+        gem.name.toLowerCase().includes(selectedCategory.toLowerCase());
+
+      return matchesSearch && matchesPrice && matchesCategory;
+    });
+    setFilteredGems(results);
+  }, [search, maxPrice, selectedCategory, gems]);
 
   return (
-    <section className="mx-auto max-w-7xl px-6 py-10">
-      <div className="mb-8 flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Gem Marketplace</h1>
-        <Link
-          to="/sell-gem"
-          className="rounded-full bg-red-600 px-5 py-2 text-sm font-semibold text-white hover:bg-red-500"
+    <div className="mx-auto max-w-7xl px-6 py-10">
+      {/* HEADER SECTION */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900">Gem Marketplace</h1>
+          <p className="text-sm text-slate-500">Discover and list authentic gemstones.</p>
+        </div>
+        <button 
+          onClick={() => navigate("/sell-gem")}
+          className="bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-2 rounded-full font-bold text-sm shadow-sm transition"
         >
-          Sell Your Gem
-        </Link>
+          + Sell Your Gem
+        </button>
       </div>
 
-      {loading ? (
-        <p className="text-center py-10">Loading gems...</p>
-      ) : (
-        <div className="grid grid-cols-12 gap-8">
-        {/* FILTERS */}
-        <aside className="col-span-12 md:col-span-3 rounded-xl border p-5 space-y-6">
-          <h3 className="text-lg font-semibold">Filters</h3>
-
-          {/* TYPE */}
+      <div className="flex flex-col md:flex-row gap-10">
+        {/* SIDEBAR FILTERS */}
+        <aside className="w-full md:w-64 space-y-8">
+          {/* Search */}
           <div>
-            <p className="mb-2 text-sm font-medium">Select type</p>
-            {["All", "Sapphire", "Ruby", "Emerald", "Tanzanite"].map((t) => (
-              <label key={t} className="flex gap-2 text-sm">
-                <input
-                  type="radio"
-                  checked={selectedType === t}
-                  onChange={() => setSelectedType(t)}
-                />
-                {t}
-              </label>
-            ))}
-          </div>
-
-          {/* WEIGHT */}
-          <div>
-            <p className="mb-2 text-sm font-medium">
-              Weight (up to {maxWeight} ct)
-            </p>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={maxWeight}
-              onChange={(e) => setMaxWeight(Number(e.target.value))}
-              className="w-full accent-yellow-500"
+            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Search</h3>
+            <input 
+              type="text" 
+              placeholder="Search gems..." 
+              className="w-full border rounded-xl p-3 text-sm focus:ring-2 focus:ring-yellow-500 outline-none transition"
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
 
-          {/* COUNTRY */}
+          {/* Categories */}
           <div>
-            <p className="mb-2 text-sm font-medium">Select country</p>
-            {["All", "Sri Lanka", "Myanmar", "Colombia", "Tanzania", "Worldwide"].map(
-              (c) => (
-                <label key={c} className="flex gap-2 text-sm">
-                  <input
-                    type="radio"
-                    checked={selectedCountry === c}
-                    onChange={() => setSelectedCountry(c)}
-                  />
-                  {c}
-                </label>
-              )
-            )}
+            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Categories</h3>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((cat) => (
+                <button 
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold transition ${
+                    selectedCategory === cat 
+                      ? "bg-yellow-500 text-black" 
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Price Range */}
+          <div>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">
+              Max Price: Rs. {Number(maxPrice).toLocaleString()}
+            </h3>
+            <input 
+              type="range" 
+              min="1000" 
+              max="1000000" 
+              step="5000"
+              value={maxPrice}
+              className="w-full accent-yellow-500"
+              onChange={(e) => setMaxPrice(e.target.value)}
+            />
           </div>
         </aside>
 
-        {/* PRODUCTS */}
-        <div className="col-span-12 md:col-span-9 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredGems.length === 0 ? (
-            <p className="col-span-full text-center py-10 text-gray-500">No gems found</p>
+        {/* GEM GRID */}
+        <main className="flex-1">
+          {loading ? (
+            <div className="flex justify-center py-20">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500"></div>
+            </div>
           ) : (
-            filteredGems.map((gem) => (
-              <ProductCard key={gem._id} {...gem} />
-            ))
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredGems.map((gem) => (
+                  <div 
+                    key={gem._id} 
+                    onClick={() => navigate(`/gems/${gem._id}`)}
+                    className="group bg-white border rounded-2xl p-4 hover:shadow-xl transition cursor-pointer"
+                  >
+                    <div className="overflow-hidden rounded-xl mb-4 aspect-square">
+                      <img 
+                        src={gem.images && gem.images.length > 0 ? gem.images[0] : 'https://via.placeholder.com/400'}
+                        alt={gem.name} 
+                        className="h-full w-full object-cover group-hover:scale-110 transition duration-500" 
+                      />
+                    </div>
+                    <h2 className="font-bold text-slate-800 group-hover:text-yellow-600 transition">{gem.name}</h2>
+                    <p className="text-xs text-slate-400 mt-1">{gem.carat} ct · {gem.origin}</p>
+                    <p className="text-orange-600 font-bold mt-3 text-lg">Rs. {gem.price.toLocaleString()}</p>
+                  </div>
+                ))}
+              </div>
+
+              {filteredGems.length === 0 && (
+                <div className="text-center py-20">
+                  <p className="text-slate-400">No gems match your current filters.</p>
+                  <button 
+                    onClick={() => {setSearch(""); setMaxPrice(1000000); setSelectedCategory("All");}}
+                    className="mt-4 text-sm font-bold text-yellow-600 hover:underline"
+                  >
+                    Clear all filters
+                  </button>
+                </div>
+              )}
+            </>
           )}
-        </div>
+        </main>
       </div>
-      )}
-    </section>
+    </div>
   );
 }

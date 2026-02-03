@@ -59,7 +59,7 @@ export default function Home() {
                 >
                   <div className="relative aspect-4/5 overflow-hidden rounded-2xl bg-gray-100 shadow-sm border border-gray-100">
                     <img
-                      src={gem.imageUrl}
+                      src={gem.images && gem.images.length > 0 ? gem.images[0] : 'https://via.placeholder.com/400'}
                       alt={gem.name}
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
                     />

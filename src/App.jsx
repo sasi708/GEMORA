@@ -17,7 +17,7 @@ import ConfirmOrder from "./pages/ConfirmOrder";
 // Market Pages
 import Market from "./pages/Market";
 import GemDetails from "./pages/GemDetails";
-import SellGem from "./pages/SellGem";
+import AddGem from "./pages/AddGem";
 import SellerDetails from "./pages/SellerDetails";
 
 // 🔴 UPDATED: Tools Pages (formerly Instruments)
@@ -69,7 +69,7 @@ export default function App() {
           path="/sell-gem"
           element={
             <ProtectedRoute>
-              <SellGem />
+              <AddGem />
             </ProtectedRoute>
           }
         />

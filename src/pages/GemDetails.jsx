@@ -7,6 +7,7 @@ export default function GemDetails() {
   const navigate = useNavigate();
   const [gem, setGem] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [mainImage, setMainImage] = useState("");
 
   // Form states for the "Order/Contact" flow
   const [address, setAddress] = useState({ street: "", lane: "", city: "", postalCode: "", country: "" });
@@ -18,6 +19,15 @@ export default function GemDetails() {
         const res = await API.get("/gems");
         const found = res.data.find((g) => g._id === id);
         setGem(found);
+        // Set main image to first image in array or fallback
+        if (found) {
+          const firstImage = found.images && found.images.length > 0 
+            ? found.images[0] 
+            : 'https://via.placeholder.com/400';
+          setMainImage(firstImage);
+          console.log("Gem data:", found); // Debug log
+          console.log("Images array:", found.images); // Debug log
+        }
       } catch (err) {
         console.error("Error fetching gem details:", err);
       } finally {
@@ -52,13 +62,29 @@ export default function GemDetails() {
       </Link>
 
       <div className="grid grid-cols-12 gap-10">
-        {/* IMAGE */}
+        {/* IMAGE GALLERY */}
         <div className="col-span-12 md:col-span-5">
+          {/* Main Image */}
           <img
-            src={gem.imageUrl}
+            src={mainImage}
             alt={gem.name}
-            className="w-full max-w-md rounded-xl object-contain shadow-lg"
+            className="w-full max-w-md rounded-xl object-contain shadow-lg mb-4"
           />
+          
+          {/* Thumbnails */}
+          {gem.images && gem.images.length > 1 && (
+            <div className="flex gap-2 flex-wrap">
+              {gem.images.map((img, i) => (
+                <img
+                  key={i}
+                  src={img}
+                  alt={`${gem.name} ${i + 1}`}
+                  className="w-20 h-20 object-cover cursor-pointer border-2 rounded-lg hover:border-yellow-500 transition"
+                  onClick={() => setMainImage(img)}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* DETAILS & ORDER FORM */}
