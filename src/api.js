@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API = axios.create({
   // Use 127.0.0.1 to match your backend test
-  baseURL: 'http://127.0.0.1:5000/api', 
+  baseURL: 'http://127.0.0.1:5001/api', 
 });
 
 // Automatically add the Token to every request

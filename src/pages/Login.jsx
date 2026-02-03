@@ -36,9 +36,11 @@ export default function Login() {
 
     try {
       setLoading(true);
+      console.log("📤 Attempting login with:", form.email);
 
       // 1. Send Login Request
       const res = await API.post("/auth/login", form);
+      console.log("✅ Login response:", res.data);
 
       // 2. Save Token & User Info
       if (res.data?.token) {
@@ -54,11 +56,14 @@ export default function Login() {
         setTimeout(() => {
           navigate("/admin/dashboard"); 
         }, 500);
+      } else {
+        setMsg("❌ No token received from server");
       }
 
     } catch (err) {
-      console.error(err);
-      setMsg(err.response?.data?.message || "❌ Login failed");
+      console.error("❌ Login Error:", err.response?.status, err.response?.data || err.message);
+      const errorMessage = err.response?.data?.message || err.message || "Login failed. Check console.";
+      setMsg(`❌ ${errorMessage}`);
     } finally {
       setLoading(false);
     }

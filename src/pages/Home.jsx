@@ -1,86 +1,71 @@
-import Hero from "../components/Hero";
-import ProductGrid from "../components/ProductGrid";
+import React, { useEffect, useState } from "react";
+import Hero from "../components/Hero";        // 👈 Keeping your Hero
+import ProductGrid from "../components/ProductGrid"; // 👈 Keeping your Grid
+import API from "../api"; 
 
 export default function Home() {
-  const featuredGems = [
-    {
-      id: "burmese-ruby",
-      name: "Burmese Ruby",
-      image: "/gems/burmese-ruby.jpg",
-      weight: 10.21,
-    },
-    {
-      id: "ceylon-sapphire",
-      name: "Ceylon Sapphire",
-      image: "/gems/ceylon-sapphire.jpg",
-      weight: 5.2,
-    },
-    {
-      id: "emerald-diamond",
-      name: "Emerald Cut Diamond",
-      image: "/gems/emerald-diamond.jpg",
-      weight: 7.4,
-    },
-    {
-      id: "colombian-emerald",
-      name: "Colombian Emerald",
-      image: "/gems/colombian-emerald.jpg",
-      weight: 8.6,
-    },
-  ];
+  const [featuredGems, setFeaturedGems] = useState([]);
+  const [premiumGems, setPremiumGems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const premiumGems = [
-    {
-      id: "tanzanite-premium",
-      name: "Tanzanite Gemstone",
-      image: "/gems/tanzanite.jpg",
-      weight: 12.3,
-      premium: true,
-    },
-    {
-      id: "opal-rainbow",
-      name: "Opal Rainbow",
-      image: "/gems/opal.jpg",
-      weight: 9.1,
-      premium: true,
-    },
-    {
-      id: "padparadscha",
-      name: "Padparadscha Sapphire",
-      image: "/gems/padparadscha.jpg",
-      weight: 6.8,
-      premium: true,
-    },
-    {
-      id: "aquamarine",
-      name: "Aquamarine",
-      image: "/gems/aquamarine.jpg",
-      weight: 11.4,
-      premium: true,
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await API.get("/tools"); // Fetching from DB
+        
+        // Transform DB data to match what ProductGrid expects
+        // (DB uses '_id' and 'imageUrl', your UI uses 'id' and 'image')
+        const formattedData = res.data.map(item => ({
+          id: item._id,
+          name: item.name,
+          image: item.imageUrl, // 👈 Mapping DB image to UI prop
+          price: item.price,    // Passing price
+          category: item.category,
+          // If your grid expects 'weight', we can mock it or use price
+          weight: item.price + " USD" 
+        }));
+
+        // Split data for the two sections (just as an example)
+        setFeaturedGems(formattedData.slice(0, 4)); // First 4
+        setPremiumGems(formattedData.slice(4, 8));  // Next 4 (or empty if not enough)
+        
+      } catch (error) {
+        console.error("Failed to load products", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <>
-      {/* HERO */}
+      {/* 1. KEEPING YOUR HERO */}
       <Hero />
 
-      {/* FEATURED GEMS */}
+      {/* 2. FEATURED SECTION (Dynamic Data) */}
       <section className="mx-auto max-w-7xl px-6 py-14">
         <h2 className="mb-8 text-center text-2xl font-bold">
           Featured Gems
         </h2>
-
-        <ProductGrid gems={featuredGems} />
+        {loading ? (
+          <p className="text-center text-gray-500">Loading...</p>
+        ) : (
+          <ProductGrid gems={featuredGems} />
+        )}
       </section>
 
-      {/* PREMIUM LISTINGS */}
+      {/* 3. PREMIUM SECTION (Dynamic Data) */}
       <section className="mx-auto max-w-7xl px-6 py-14">
         <h2 className="mb-8 text-center text-2xl font-bold">
           Premium Listings
         </h2>
-
-        <ProductGrid gems={premiumGems} />
+        {loading ? (
+          <p className="text-center text-gray-500">Loading...</p>
+        ) : (
+          <ProductGrid gems={premiumGems} />
+        )}
       </section>
     </>
   );
