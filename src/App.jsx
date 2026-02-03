@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ChatWidget from "./components/ChatWidget";
 
+
 // Pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -66,6 +67,12 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+  path="/seller/:sellerId"
+  element={<SellerDetails />}
+/>
+
         <Route
           path="/sell-gem"
           element={
@@ -128,6 +135,11 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+  path="/instruments/:id"
+  element={<InstrumentDetails />}
+/>
+
 
         {/* 🔴 Admin Dashboard */}
         <Route 

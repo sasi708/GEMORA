@@ -76,6 +76,10 @@ export default function Profile() {
     if (token) {
       load();
       loadOrders();
+      
+      // Refresh orders every 10 seconds to get real-time admin updates
+      const interval = setInterval(loadOrders, 10000);
+      return () => clearInterval(interval);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

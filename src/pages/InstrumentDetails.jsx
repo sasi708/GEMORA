@@ -10,16 +10,14 @@ export default function InstrumentDetails() {
   const [moreFromStore, setMoreFromStore] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 ADD QUANTITY STATE
+  // Order states
   const [qty, setQty] = useState(1);
-
-  // 🔹 ADD MISSING ADDRESS STATES
   const [street, setStreet] = useState("");
   const [lane, setLane] = useState("");
-  const [city, setCity] = useState(""); // 👈 New
-  const [postalCode, setPostalCode] = useState(""); // 👈 New
+  const [city, setCity] = useState("");
+  const [postalCode, setPostalCode] = useState("");
   const [district, setDistrict] = useState("");
-  const [country, setCountry] = useState("Sri Lanka");
+  const [country] = useState("Sri Lanka");
   const [mobile, setMobile] = useState("");
 
   useEffect(() => {
@@ -38,70 +36,201 @@ export default function InstrumentDetails() {
     fetchData();
   }, [id]);
 
-  if (loading) return <div className="p-10 text-center">Loading Product...</div>;
+  if (loading) return <div className="p-10 text-center">Loading...</div>;
   if (!product) return <div className="p-10 text-center">Product not found</div>;
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
+      {/* Back button */}
       <div className="mb-6 flex justify-end">
-        <Link to="/instruments" className="rounded-full bg-red-500 px-5 py-2 text-xs text-white">Back To Shop</Link>
+        <Link
+          to="/instruments"
+          className="rounded-full bg-red-500 px-5 py-2 text-xs text-white"
+        >
+          Back To Market
+        </Link>
       </div>
 
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[340px_1fr]">
-        <div className="space-y-4">
-          <div className="rounded-xl border p-3 bg-white">
-            <img src={product.imageUrl} alt={product.name} className="w-full object-contain h-64" />
+      {/* MAIN GRID */}
+      <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+        {/* LEFT COLUMN – IMAGE + ORDER */}
+        <div className="space-y-8">
+          {/* Image */}
+          <div className="rounded-2xl bg-gradient-to-br from-gray-900 to-black p-6">
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="mx-auto h-72 object-contain"
+            />
           </div>
 
-          <div>
-            <p className="text-sm font-semibold">{product.name}</p>
-            <p className="text-sm text-gray-600">Rs. {product.price.toLocaleString()}</p>
-          </div>
-
-          {/* 🔹 QUANTITY SELECTOR */}
-          <div className="flex items-center gap-4 py-2 border-y">
-            <p className="text-xs font-medium">Quantity:</p>
-            <div className="flex items-center border rounded">
-              <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-2 py-1 bg-gray-100">-</button>
-              <span className="px-4 text-sm">{qty}</span>
-              <button onClick={() => setQty(Math.min(product.countInStock || 10, qty + 1))} className="px-2 py-1 bg-gray-100">+</button>
+          {/* ORDER BOX */}
+          <div className="rounded-xl border p-5 space-y-4">
+            {/* Quantity */}
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-medium">Quantity</p>
+              <div className="flex items-center border rounded">
+                <button
+                  onClick={() => setQty(Math.max(1, qty - 1))}
+                  className="px-2 py-1 bg-gray-100"
+                >
+                  -
+                </button>
+                <span className="px-4 text-sm">{qty}</span>
+                <button
+                  onClick={() => setQty(qty + 1)}
+                  className="px-2 py-1 bg-gray-100"
+                >
+                  +
+                </button>
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <p className="text-xs font-medium">Shipping Address</p>
-            <input placeholder="Street" value={street} onChange={(e) => setStreet(e.target.value)} className="w-full rounded border px-3 py-2 text-xs" />
-            <input placeholder="Lane" value={lane} onChange={(e) => setLane(e.target.value)} className="w-full rounded border px-3 py-2 text-xs" />
-            <div className="grid grid-cols-2 gap-2">
-               <input placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} className="w-full rounded border px-3 py-2 text-xs" />
-               <input placeholder="Postal Code" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} className="w-full rounded border px-3 py-2 text-xs" />
+            {/* Address */}
+            <div className="space-y-2">
+              <p className="text-xs font-medium">Shipping Address</p>
+              <input
+                placeholder="Street"
+                value={street}
+                onChange={(e) => setStreet(e.target.value)}
+                className="w-full rounded border px-3 py-2 text-xs"
+              />
+              <input
+                placeholder="Lane"
+                value={lane}
+                onChange={(e) => setLane(e.target.value)}
+                className="w-full rounded border px-3 py-2 text-xs"
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  placeholder="City"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="w-full rounded border px-3 py-2 text-xs"
+                />
+                <input
+                  placeholder="Postal Code"
+                  value={postalCode}
+                  onChange={(e) => setPostalCode(e.target.value)}
+                  className="w-full rounded border px-3 py-2 text-xs"
+                />
+              </div>
+              <input
+                placeholder="District"
+                value={district}
+                onChange={(e) => setDistrict(e.target.value)}
+                className="w-full rounded border px-3 py-2 text-xs"
+              />
             </div>
-            <input placeholder="District" value={district} onChange={(e) => setDistrict(e.target.value)} className="w-full rounded border px-3 py-2 text-xs" />
-          </div>
 
-          <div className="space-y-2">
-            <p className="text-xs font-medium">Mobile Number</p>
-            <input placeholder="Phone" value={mobile} onChange={(e) => setMobile(e.target.value)} className="w-full rounded border px-3 py-2 text-xs" />
-          </div>
+            {/* Mobile */}
+            <div className="space-y-2">
+              <p className="text-xs font-medium">Mobile Number</p>
+              <input
+                placeholder="Phone"
+                value={mobile}
+                onChange={(e) => setMobile(e.target.value)}
+                className="w-full rounded border px-3 py-2 text-xs"
+              />
+            </div>
 
-          <button
-            onClick={() => {
-              const orderData = {
-                product,
-                qty, // 👈 Send quantity
-                address: { street, lane, city, postalCode, district, country }, // 👈 Send full address
-                mobile,
-              };
-              sessionStorage.setItem("orderData", JSON.stringify(orderData));
-              navigate("/confirm-order");
-            }}
-            className="w-full rounded-full bg-yellow-500 py-2 text-xs font-semibold text-white"
-          >
-            Order Now
-          </button>
+            {/* Order Button */}
+            <button
+              onClick={() => {
+                const orderData = {
+                  product,
+                  qty,
+                  address: {
+                    street,
+                    lane,
+                    city,
+                    postalCode,
+                    district,
+                    country,
+                  },
+                  mobile,
+                };
+                sessionStorage.setItem(
+                  "orderData",
+                  JSON.stringify(orderData)
+                );
+                navigate("/confirm-order");
+              }}
+              className="w-full rounded-full bg-yellow-500 py-2 text-xs font-semibold text-white"
+            >
+              Order Now
+            </button>
+          </div>
         </div>
 
-        {/* Right side info remains the same... */}
+        {/* RIGHT COLUMN – DETAILS + MORE FROM STORE */}
+        <div className="space-y-8">
+          {/* Details */}
+          <div className="space-y-4">
+            <h1 className="text-2xl font-semibold">{product.name}</h1>
+
+            <p className="text-sm text-gray-600 leading-relaxed">
+              {product.description ||
+                "This gemstone features exceptional clarity, vibrant color, and a refined cut."}
+            </p>
+
+            <div className="border-t pt-4 space-y-1">
+              <p className="text-sm font-medium">
+                Seller – {product.sellerName || "Kasun Ranathunga"}
+              </p>
+              <p className="text-xs text-gray-500">
+                Location – {product.location || "Colombo, Sri Lanka"}
+              </p>
+              <p className="text-xs text-gray-500">
+                Contact – {product.contact || "071XXXXXXX"}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <p>
+                <span className="font-medium">Gem Type:</span>{" "}
+                {product.type || "Yellow Sapphire"}
+              </p>
+              <p>
+                <span className="font-medium">Weight:</span>{" "}
+                {product.weight || "8.23ct"}
+              </p>
+            </div>
+
+            <p className="text-lg font-semibold">
+              Rs. {product.price?.toLocaleString()}
+            </p>
+          </div>
+
+          {/* MORE FROM STORE – EXACTLY IN EMPTY SPACE */}
+          <div className="border-t pt-6">
+            <h2 className="mb-4 text-sm font-semibold text-gray-700">
+              More From Store
+            </h2>
+
+            <div className="grid grid-cols-2 gap-4">
+              {moreFromStore.slice(0, 4).map((item) => (
+                <Link
+                  key={item._id}
+                  to={`/instruments/${item._id}`}
+                  className="rounded-lg border p-3 hover:shadow transition"
+                >
+                  <img
+                    src={item.imageUrl}
+                    alt={item.name}
+                    className="h-24 w-full object-contain"
+                  />
+                  <p className="mt-1 text-xs font-medium truncate">
+                    {item.name}
+                  </p>
+                  <p className="text-[11px] text-gray-500">
+                    Rs. {item.price?.toLocaleString()}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
