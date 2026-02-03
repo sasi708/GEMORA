@@ -6,7 +6,8 @@ export default function AdminInstruments() {
   const [items, setItems] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ name: "", brand: "", category: "Inspection", price: 0, countInStock: 0, description: "", imageUrl: "" });
+  const [imageFile, setImageFile] = useState(null);
+  const [form, setForm] = useState({ name: "", brand: "", category: "Inspection", price: 0, countInStock: 0, description: "" });
 
   const fetchTools = async () => {
     try {
@@ -21,7 +22,6 @@ export default function AdminInstruments() {
   useEffect(() => { fetchTools(); }, []);
 
   const addItem = async () => {
-    // Validation
     if (!form.name.trim()) {
       alert("⚠️ Instrument name is required");
       return;
@@ -30,22 +30,32 @@ export default function AdminInstruments() {
       alert("⚠️ Price must be greater than 0");
       return;
     }
+    if (!imageFile) {
+      alert("⚠️ Please select an image");
+      return;
+    }
 
     try {
       setLoading(true);
-      const payload = {
-        ...form,
-        price: Number(form.price),
-        countInStock: Number(form.countInStock),
-      };
-      console.log("📤 Sending instrument:", payload);
       
-      await API.post("/tools", payload);
+      const data = new FormData();
+      data.append("name", form.name);
+      data.append("brand", form.brand);
+      data.append("category", form.category);
+      data.append("price", Number(form.price));
+      data.append("countInStock", Number(form.countInStock));
+      data.append("description", form.description);
+      data.append("image", imageFile);
+
+      console.log("📤 Sending instrument with image");
+      await API.post("/tools", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      
       alert("✅ Instrument added successfully!");
       setOpen(false);
-      
-      // Reset form
-      setForm({ name: "", brand: "", category: "Inspection", price: 0, countInStock: 0, description: "", imageUrl: "" });
+      setForm({ name: "", brand: "", category: "Inspection", price: 0, countInStock: 0, description: "" });
+      setImageFile(null);
       fetchTools();
     } catch (error) {
       console.error("❌ Add instrument error:", error.response?.status, error.response?.data || error.message);
@@ -125,12 +135,16 @@ export default function AdminInstruments() {
                        onChange={e => setForm({...form, countInStock: e.target.value})} 
                        className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-orange-500 outline-none" 
                     />
-                    <input 
-                       placeholder="Image URL" 
-                       value={form.imageUrl}
-                       onChange={e => setForm({...form, imageUrl: e.target.value})} 
-                       className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-orange-500 outline-none" 
-                    />
+                    <div>
+                       <label className="block text-sm font-medium mb-1">Upload Image *</label>
+                       <input 
+                          type="file"
+                          accept="image/*"
+                          onChange={e => setImageFile(e.target.files?.[0] || null)}
+                          className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-orange-500 outline-none" 
+                       />
+                       {imageFile && <p className="text-sm text-green-600 mt-1">✓ {imageFile.name}</p>}
+                    </div>
                     <textarea 
                        placeholder="Description" 
                        value={form.description}
