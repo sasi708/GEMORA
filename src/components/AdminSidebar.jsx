@@ -56,6 +56,16 @@ export default function AdminSidebar() {
           News
         </Link>
 
+        <Link
+          to="/admin/orders"
+          className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${isActive(
+            "/admin/orders"
+          )}`}
+        >
+          <Users size={20} />
+          Manage Orders
+        </Link>
+
         {/* ✅ CERTIFICATES */}
         <Link
           to="/admin/certificates"

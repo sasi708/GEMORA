@@ -30,6 +30,7 @@ import AdminNews from "./pages/AdminNews";
 import AdminInstruments from "./pages/AdminInstruments";
 import AdminSettings from "./pages/AdminSettings";
 import AdminCertificates from "./pages/AdminCertificates";
+import AdminOrders from "./pages/AdminOrders";
 import Profile from "./pages/Profile";
 
 
@@ -144,6 +145,15 @@ export default function App() {
               <AdminNews />
             </ProtectedRoute>
           } 
+        />
+
+        <Route
+          path="/admin/orders"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminOrders />
+            </ProtectedRoute>
+          }
         />
 
         <Route
