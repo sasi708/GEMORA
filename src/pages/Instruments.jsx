@@ -1,65 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import API from "../api"; // 👈 Import API connection
 
 export default function Instruments() {
   const navigate = useNavigate();
 
   // STATES
+  const [products, setProducts] = useState([]); // 👈 Store real data here
+  const [loading, setLoading] = useState(true);
+  
   const [price, setPrice] = useState(300000);
   const [selectedType, setSelectedType] = useState("All");
 
-  // PRODUCTS DATA
-  const products = [
-    {
-      id: 1,
-      name: "Gem Cutting Machine",
-      price: 50000,
-      type: "Cutting Machine",
-      image: "/instrument/Gem cutting Machine.jpeg",
-    },
-    {
-      id: 2,
-      name: "Gem Cutting Machine",
-      price: 50000,
-      type: "Cutting Machine",
-      image: "/instrument/Gem cutting Machine 02.jpeg",
-    },
-    {
-      id: 3,
-      name: "Torch",
-      price: 7500,
-      type: "Torch",
-      image: "/instrument/Torch.jpeg",
-    },
-    {
-      id: 4,
-      name: "Torch",
-      price: 9500,
-      type: "Torch",
-      image: "/instrument/Torch 02.jpeg",
-    },
-    {
-      id: 5,
-      name: "Scale",
-      price: 6500,
-      type: "Scales",
-      image: "/instrument/Scale.jpeg",
-    },
-    {
-      id: 6,
-      name: "Scale",
-      price: 18500,
-      type: "Scales",
-      image: "/instrument/Scale 02.jpeg",
-    },
-  ];
+  // 1. FETCH REAL DATA FROM BACKEND
+  useEffect(() => {
+    const fetchTools = async () => {
+      try {
+        const res = await API.get("/tools");
+        
+        // Transform DB data to match your existing UI structure
+        const formattedTools = res.data
+          .filter(item => item.status === "Approved") // Only show Approved
+          .map(item => ({
+            id: item._id,          // DB uses '_id'
+            name: item.name,
+            price: item.price,
+            type: item.category,   // DB uses 'category', your UI uses 'type'
+            image: item.imageUrl   // DB uses 'imageUrl', your UI uses 'image'
+          }));
+
+        setProducts(formattedTools);
+      } catch (error) {
+        console.error("Failed to load instruments:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTools();
+  }, []);
+
+  // 2. GET UNIQUE CATEGORIES DYNAMICALLY
+  // This ensures filters match exactly what is in your database
+  const categories = useMemo(() => {
+    const uniqueTypes = new Set(products.map(p => p.type));
+    return ["All", ...uniqueTypes];
+  }, [products]);
 
   // FILTER LOGIC
   const filteredProducts = products.filter((item) => {
     const matchPrice = item.price <= price;
-    const matchType =
-      selectedType === "All" || item.type === selectedType;
-
+    const matchType = selectedType === "All" || item.type === selectedType;
     return matchPrice && matchType;
   });
 
@@ -71,67 +62,34 @@ export default function Instruments() {
         Find What You Want to...
       </h1>
 
-      <div className="flex gap-8">
+      <div className="flex flex-col md:flex-row gap-8">
 
         {/* ================= LEFT FILTERS ================= */}
-        <aside className="w-64 border-r pr-6">
+        <aside className="w-full md:w-64 border-r pr-6">
 
           <h2 className="mb-6 text-lg font-semibold">
             Filters
           </h2>
 
-          {/* Select Type */}
+          {/* Select Type (Dynamic) */}
           <div className="mb-8">
             <p className="mb-3 text-sm font-medium text-gray-700">
               Select Type
             </p>
 
             <div className="space-y-3 text-sm">
-
-              <label className="flex items-center gap-3 rounded-lg border px-3 py-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="type"
-                  checked={selectedType === "Cutting Machine"}
-                  onChange={() => setSelectedType("Cutting Machine")}
-                  className="accent-yellow-500"
-                />
-                Cutting Machine
-              </label>
-
-              <label className="flex items-center gap-3 rounded-lg border px-3 py-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="type"
-                  checked={selectedType === "Torch"}
-                  onChange={() => setSelectedType("Torch")}
-                  className="accent-yellow-500"
-                />
-                Torch
-              </label>
-
-              <label className="flex items-center gap-3 rounded-lg border px-3 py-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="type"
-                  checked={selectedType === "Loupes"}
-                  onChange={() => setSelectedType("Loupes")}
-                  className="accent-yellow-500"
-                />
-                Loupes
-              </label>
-
-              <label className="flex items-center gap-3 rounded-lg border px-3 py-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="type"
-                  checked={selectedType === "Scales"}
-                  onChange={() => setSelectedType("Scales")}
-                  className="accent-yellow-500"
-                />
-                Scales
-              </label>
-
+              {categories.map((cat) => (
+                <label key={cat} className="flex items-center gap-3 rounded-lg border px-3 py-2 cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="radio"
+                    name="type"
+                    checked={selectedType === cat}
+                    onChange={() => setSelectedType(cat)}
+                    className="accent-yellow-500"
+                  />
+                  {cat}
+                </label>
+              ))}
             </div>
           </div>
 
@@ -157,21 +115,15 @@ export default function Instruments() {
             </div>
           </div>
 
-          {/* Select Country (UI only – logic later) */}
-          <div>
+          {/* Select Country (Visual Only) */}
+          <div className="mb-8 opacity-50 pointer-events-none"> 
             <p className="mb-3 text-sm font-medium text-gray-700">
-              Select Country
+              Select Country (N/A for Tools)
             </p>
-
             <div className="space-y-3 text-sm">
-              <label className="flex items-center gap-3 rounded-lg border px-3 py-2 cursor-pointer">
-                <input type="radio" name="country" defaultChecked className="accent-yellow-500" />
-                Sri Lanka
-              </label>
-
-              <label className="flex items-center gap-3 rounded-lg border px-3 py-2 cursor-pointer">
-                <input type="radio" name="country" className="accent-yellow-500" />
-                North America
+              <label className="flex items-center gap-3 rounded-lg border px-3 py-2">
+                <input type="radio" checked readOnly className="accent-yellow-500" />
+                Worldwide Shipping
               </label>
             </div>
           </div>
@@ -181,40 +133,54 @@ export default function Instruments() {
         {/* ================= RIGHT PRODUCTS ================= */}
         <section className="flex-1">
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {loading ? (
+             <p className="text-center text-gray-500 mt-10">Loading Instruments...</p>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
-            {filteredProducts.map((item) => (
-              <div
-                key={item.id}
-                className="rounded-xl border p-4 text-center"
-              >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="mx-auto h-40 object-contain"
-                />
-                <h3 className="mt-4 text-sm font-medium">
-                  {item.name}
-                </h3>
-                <p className="text-sm text-gray-600">
-                  Rs. {item.price.toLocaleString()}
-                </p>
-                <button
-                  onClick={() => navigate(`/instrument/${item.id}`)}
-                  className="mt-3 cursor-pointer rounded-md bg-yellow-500 px-4 py-2 text-sm font-semibold text-white"
-              >
-                   Buy Now
-              </button>
-              </div>
-            ))}
+              {filteredProducts.map((item) => (
+                <div
+                  key={item.id}
+                  className="rounded-xl border p-4 text-center hover:shadow-lg transition bg-white"
+                >
+                  <div className="h-40 w-full flex items-center justify-center overflow-hidden mb-4">
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="h-full w-full object-contain"
+                      />
+                    ) : (
+                      <div className="text-gray-300 text-xs">No Image</div>
+                    )}
+                  </div>
+                  
+                  <h3 className="text-sm font-medium text-gray-900 line-clamp-1">
+                    {item.name}
+                  </h3>
+                  <p className="text-xs text-gray-500 mb-1">{item.type}</p>
+                  
+                  <p className="text-sm font-bold text-gray-900">
+                    Rs. {item.price.toLocaleString()}
+                  </p>
+                  
+                  <button
+                    onClick={() => navigate(`/instruments/${item.id}`)} // Goes to Detail Page
+                    className="mt-3 w-full cursor-pointer rounded-md bg-yellow-500 px-4 py-2 text-sm font-semibold text-white hover:bg-yellow-600 transition"
+                  >
+                    Buy Now
+                  </button>
+                </div>
+              ))}
 
-            {filteredProducts.length === 0 && (
-              <p className="col-span-full text-center text-sm text-gray-500">
-                No items found for this filter
-              </p>
-            )}
+              {filteredProducts.length === 0 && (
+                <div className="col-span-full py-10 text-center text-gray-500 bg-gray-50 rounded-lg border border-dashed">
+                  <p>No instruments found matching these filters.</p>
+                </div>
+              )}
 
-          </div>
+            </div>
+          )}
 
         </section>
       </div>
