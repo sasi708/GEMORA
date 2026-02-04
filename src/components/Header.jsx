@@ -89,9 +89,9 @@ export default function Header() {
                 Contact
               </Link>
 
-              <Link to="/admin/dashboard" className="hover:text-yellow-500">
+              {/* <Link to="/admin/dashboard" className="hover:text-yellow-500">
                 Admin
-              </Link>
+              </Link> */}
             </>
           )}
         </nav>

@@ -57,7 +57,7 @@ export default function Home() {
                 <div
                   key={gem._id}
                   className="group cursor-pointer transform transition duration-500 hover:-translate-y-2"
-                  onClick={() => navigate(`/gems/${gem._id}`)}
+                  onClick={() => navigate(`/seller/${gem.seller?._id || gem.seller?.id || "demo-seller"}/${gem._id}`, { state: { gem } })}
                 >
                   {/* CARD CONTAINER */}
                   <div className="relative aspect-4/5 overflow-hidden rounded-3xl bg-gray-100 shadow-xl group-hover:shadow-2xl transition duration-300">

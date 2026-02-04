@@ -1,48 +1,48 @@
-﻿import { Link } from "react-router-dom";
+﻿import { Link, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import API from "../api";
 
-const DUMMY_SELLER = {
-  name: "sunil nissanka",
-  email: "nsunul@gmail.com",
-  location: "12/5,eheliyagoda,srilanka",
-  contact: "+94 11 234 5678",
-  profilePic: "https://via.placeholder.com/150",
-};
-
 export default function SellerFallback() {
   const [seller, setSeller] = useState(null);
+  const [gem, setGem] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { sellerId, gemId } = useParams();
+  const location = useLocation();
 
   useEffect(() => {
-    const fetchSeller = async () => {
+    const fetchGem = async () => {
       try {
-        const res = await API.get("/auth/users");
-        const users = res.data?.users || res.data || [];
-        
-        const firstUser = users.find(u => u.role === "user") || users[0];
-        
-        if (firstUser) {
-          setSeller({
-            name: firstUser.name,
-            email: firstUser.email,
-            location: "Colombo, Sri Lanka",
-            contact: "+94 11 234 5678",
-            profilePic: firstUser.profilePic || firstUser.profileImage || "https://via.placeholder.com/150",
-          });
-        } else {
-          setSeller(DUMMY_SELLER);
-        }
+        const res = await API.get(`/gems/${gemId}`);
+        const gemData = res.data;
+        setGem(gemData);
+        setSeller(gemData.seller);
       } catch (error) {
-        console.error("Failed to fetch seller:", error);
-        setSeller(DUMMY_SELLER);
+        console.error("Failed to fetch gem:", error);
+        // Fallback
+        const fallbackGem = location.state?.gem;
+        if (fallbackGem) {
+          setGem(fallbackGem);
+          setSeller(fallbackGem.seller);
+        } else {
+          setSeller({
+            name: "Demo Seller",
+            email: "demo@gemora.com",
+            location: "Colombo, Sri Lanka",
+            phone: "+94 11 234 5678",
+            profilePic: "https://via.placeholder.com/150",
+          });
+        }
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSeller();
-  }, []);
+    if (gemId) {
+      fetchGem();
+    } else {
+      setLoading(false);
+    }
+  }, [gemId, location.state]);
 
   if (loading) {
     return (
@@ -91,19 +91,11 @@ export default function SellerFallback() {
               <span className="font-medium">Email:</span> {seller.email}
             </p>
             <p>
-              <span className="font-medium">Location:</span> {seller.location}
-            </p>
-            <p>
-              <span className="font-medium">Contact:</span> {seller.contact}
+              <span className="font-medium">Mobile:</span> {seller.phone || seller.contact}
             </p>
           </div>
 
-          <a
-            href={`mailto:${seller.email}`}
-            className="mt-5 inline-block w-full rounded-full bg-yellow-500 px-6 py-3 text-center font-semibold text-black hover:bg-yellow-400"
-          >
-            Contact Seller
-          </a>
+
         </div>
       </div>
     </section>

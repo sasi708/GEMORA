@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function ProductCard({ id, name, image, weight, price }) {
+export default function ProductCard({ id, name, image, weight, price, gemType }) {
   return (
     <div className="flex flex-col rounded-xl border bg-white p-4 shadow-sm hover:shadow-md transition">
       <img
@@ -11,6 +11,8 @@ export default function ProductCard({ id, name, image, weight, price }) {
 
       <h3 className="mt-3 text-sm font-semibold text-center">{name}</h3>
       <p className="text-xs text-gray-500 text-center">{weight} ct</p>
+
+      <p className="text-xs text-gray-500 text-center">Type: {gemType}</p>
 
       <p className="mt-1 text-sm font-bold text-orange-600 text-center">
 {price}

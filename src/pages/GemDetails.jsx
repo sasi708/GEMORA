@@ -10,8 +10,8 @@ export default function GemDetails() {
   const [mainImage, setMainImage] = useState("");
 
   // Form states for the "Order/Contact" flow
-  const [address, setAddress] = useState({ street: "", lane: "", city: "", postalCode: "", country: "" });
-  const [mobile, setMobile] = useState("");
+  // const [address, setAddress] = useState({ street: "", lane: "", city: "", postalCode: "", country: "" });
+  // const [mobile, setMobile] = useState("");
 
   useEffect(() => {
     const fetchGem = async () => {
@@ -40,17 +40,17 @@ export default function GemDetails() {
   if (loading) return <p className="p-10 text-center">Loading Gem Details...</p>;
   if (!gem) return <p className="p-10 text-center">Gem not found</p>;
 
-  const handleOrder = () => {
-    const orderData = {
-      product: gem,
-      qty: 1,
-      address,
-      mobile,
-      type: "Gem"
-    };
-    sessionStorage.setItem("orderData", JSON.stringify(orderData));
-    navigate("/confirm-order");
-  };
+  // const handleOrder = () => {
+  //   const orderData = {
+  //     product: gem,
+  //     qty: 1,
+  //     address,
+  //     mobile,
+  //     type: "Gem"
+  //   };
+  //   sessionStorage.setItem("orderData", JSON.stringify(orderData));
+  //   navigate("/confirm-order");
+  // };
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-10">
@@ -108,43 +108,10 @@ export default function GemDetails() {
               <p>
                 <b>Stock:</b> {gem.countInStock}
               </p>
+              <p>
+                <b>Mobile Number:</b> {gem.phoneNumber || gem.seller?.phone}
+              </p>
             </div>
-          </div>
-
-          {/* SHIPPING FORM */}
-          <div className="rounded-xl border bg-gray-50 p-5 space-y-3">
-            <h3 className="font-semibold italic text-red-500 text-xs">
-              Note: Cash on Delivery Only
-            </h3>
-            <input
-              placeholder="Street"
-              className="w-full border p-2 text-sm rounded"
-              onChange={(e) => setAddress({ ...address, street: e.target.value })}
-            />
-            <div className="grid grid-cols-2 gap-2">
-              <input
-                placeholder="City"
-                className="border p-2 text-sm rounded"
-                onChange={(e) => setAddress({ ...address, city: e.target.value })}
-              />
-              <input
-                placeholder="Postal Code"
-                className="border p-2 text-sm rounded"
-                onChange={(e) => setAddress({ ...address, postalCode: e.target.value })}
-              />
-            </div>
-            <input
-              placeholder="Mobile Number"
-              className="w-full border p-2 text-sm rounded"
-              onChange={(e) => setMobile(e.target.value)}
-            />
-
-            <button
-              onClick={handleOrder}
-              className="w-full bg-yellow-500 py-3 rounded-full font-bold hover:bg-yellow-600 transition"
-            >
-              Order Now
-            </button>
           </div>
         </div>
       </div>

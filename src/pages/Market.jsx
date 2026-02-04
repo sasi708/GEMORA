@@ -24,10 +24,12 @@ export default function Market() {
   const categories = [
     "All",
     "Sapphire",
+    "Ruby",
     "Emerald",
-    "Alexandrite",
-    "Topaz",
-    "Spinel",
+    "Tanzanite",
+    "Diamond",
+    "Opal",
+    "Aquamarine",
   ];
 
   // Fetch gems
@@ -35,8 +37,12 @@ export default function Market() {
     const fetchGems = async () => {
       try {
         const res = await API.get("/gems");
-        setGems(res.data);
-        setFilteredGems(res.data);
+        const gemsWithType = res.data.map(gem => ({
+          ...gem,
+          type: "Sapphire"
+        }));
+        setGems(gemsWithType);
+        setFilteredGems(gemsWithType);
       } catch (err) {
         console.error("Error fetching gems:", err);
       } finally {
@@ -55,7 +61,7 @@ export default function Market() {
 
       const matchesCategory =
         selectedCategory === "All" ||
-        gem.name.toLowerCase().includes(selectedCategory.toLowerCase());
+        selectedCategory === "Sapphire";
 
       return matchesSearch && matchesCategory;
     });
@@ -135,6 +141,7 @@ export default function Market() {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredGems.map((gem) => {
+                  const gemType = gem.type || 'Sapphire';
                   const seller = gem.seller || DUMMY_SELLER;
                   const sellerId = seller?._id || seller?.id || "demo-seller";
 
@@ -172,10 +179,14 @@ export default function Market() {
                       {gem.carat} ct · {gem.origin}
                     </p>
 
+                    <p className="text-xs font-bold text-blue-600 mt-1">
+                      Type: Sapphire
+                    </p>
+
                     {/* CONTACT NOW */}
                     <button
                       onClick={() => {
-                        navigate(`/seller/${sellerId}`);
+                        navigate(`/market/${gem._id}`);
                       }}
                       className="mt-4 w-full rounded-full bg-yellow-500 py-2 text-xs font-bold hover:bg-yellow-600 transition"
                     >
