@@ -23,8 +23,8 @@ export default function AddGem() {
 
     // Append text fields
     data.append("name", formData.name);
-    data.append("carat", formData.carat);
-    data.append("price", formData.price);
+    data.append("carat", parseInt(formData.carat));
+    data.append("phoneNumber", formData.phoneNumber);
     data.append("description", formData.description);
     data.append("clarity", formData.clarity);
     data.append("origin", formData.origin);
@@ -113,7 +113,7 @@ export default function AddGem() {
                 <input 
                   type="number"
                   className="w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-yellow-400"
-                  onChange={e => setFormData({...formData, price: e.target.value})} 
+                  onChange={e => setFormData({...formData, phoneNumber: e.target.value})} 
                   required
                 />
               </div>
