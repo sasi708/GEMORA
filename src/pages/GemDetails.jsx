@@ -93,7 +93,7 @@ export default function GemDetails() {
           <div>
             <h1 className="text-3xl font-bold">{gem.name}</h1>
             <p className="text-2xl text-orange-600 font-bold mt-2">
-              Rs. {gem.price?.toLocaleString()}
+{gem.price?.toLocaleString()}
             </p>
             <div className="mt-4 grid grid-cols-2 gap-4 text-sm bg-white p-4 rounded-lg border">
               <p>

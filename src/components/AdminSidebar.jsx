@@ -7,6 +7,7 @@ import {
   Users,
   Settings,
   LogOut,
+  Gem,
 } from "lucide-react";
 
 export default function AdminSidebar() {
@@ -44,6 +45,16 @@ export default function AdminSidebar() {
         >
           <PenTool size={20} />
           Instruments
+        </Link>
+
+        <Link
+          to="/admin/gems"
+          className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${isActive(
+            "/admin/gems"
+          )}`}
+        >
+          <Gem size={20} />
+          Manage Gems
         </Link>
 
         <Link

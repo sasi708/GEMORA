@@ -13,7 +13,7 @@ export default function ProductCard({ id, name, image, weight, price }) {
       <p className="text-xs text-gray-500 text-center">{weight} ct</p>
 
       <p className="mt-1 text-sm font-bold text-orange-600 text-center">
-        Rs. {price}
+{price}
       </p>
 
       {/* 🔥 FORCE BUTTON VISIBILITY */}

@@ -14,18 +14,6 @@ export default function Login() {
     setForm((p) => ({ ...p, [name]: value }));
   };
 
-  // The Smoke Test Function (You can delete this later)
-  const handleTest = async () => {
-    try {
-      console.log("Testing connection...");
-      const res = await API.get("/health"); 
-      alert("✅ SUCCESS: " + res.data.message);
-    } catch (error) {
-      console.error("Connection failed:", error);
-      alert("❌ ERROR: Cannot connect to Backend. Check Console (F12).");
-    }
-  };
-
   const handleLogin = async () => {
     setMsg("");
 
@@ -112,15 +100,6 @@ export default function Login() {
 
         {/* Message */}
         {msg && <p className="mb-4 text-center text-sm font-bold text-gray-700">{msg}</p>}
-
-        {/* Test Button (Keep until login works) */}
-        <button 
-          type="button"
-          onClick={handleTest}
-          className="mb-4 w-full bg-purple-600 text-white py-2 rounded-xl font-bold hover:bg-purple-700 transition"
-        >
-          TEST SERVER CONNECTION
-        </button>
 
         <button
           type="button"

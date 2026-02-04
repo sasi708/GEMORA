@@ -89,11 +89,6 @@ export default function Header() {
                 Contact
               </Link>
 
-              {/* ✅ Profile Link */}
-              <Link to="/profile" className="hover:text-yellow-500">
-                Profile
-              </Link>
-
               <Link to="/admin/dashboard" className="hover:text-yellow-500">
                 Admin
               </Link>
@@ -124,7 +119,7 @@ export default function Header() {
               {/* Avatar + name */}
               <Link
                 to="/profile"
-                className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-yellow-50"
+                className="flex items-center gap-2"
                 title="Go to Profile"
               >
                 {profilePic ? (

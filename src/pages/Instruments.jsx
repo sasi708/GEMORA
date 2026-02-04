@@ -26,7 +26,7 @@ export default function Instruments() {
             name: item.name,
             price: item.price,
             type: item.category,   // DB uses 'category', your UI uses 'type'
-            image: item.imageUrl   // DB uses 'imageUrl', your UI uses 'image'
+            images: item.images || []  // DB uses 'images' array
           }));
 
         setProducts(formattedTools);
@@ -110,21 +110,8 @@ export default function Instruments() {
             />
 
             <div className="mt-2 flex justify-between text-xs text-gray-500">
-              <span>Rs. 0</span>
-              <span>Rs. {price.toLocaleString()}</span>
-            </div>
-          </div>
-
-          {/* Select Country (Visual Only) */}
-          <div className="mb-8 opacity-50 pointer-events-none"> 
-            <p className="mb-3 text-sm font-medium text-gray-700">
-              Select Country (N/A for Tools)
-            </p>
-            <div className="space-y-3 text-sm">
-              <label className="flex items-center gap-3 rounded-lg border px-3 py-2">
-                <input type="radio" checked readOnly className="accent-yellow-500" />
-                Worldwide Shipping
-              </label>
+              <span>$0</span>
+              <span>${price.toLocaleString()}</span>
             </div>
           </div>
 
@@ -144,9 +131,9 @@ export default function Instruments() {
                   className="rounded-xl border p-4 text-center hover:shadow-lg transition bg-white"
                 >
                   <div className="h-40 w-full flex items-center justify-center overflow-hidden mb-4">
-                    {item.image ? (
+                    {item.images && item.images.length > 0 ? (
                       <img
-                        src={item.image}
+                        src={item.images[0]}
                         alt={item.name}
                         className="h-full w-full object-contain"
                       />
@@ -161,7 +148,7 @@ export default function Instruments() {
                   <p className="text-xs text-gray-500 mb-1">{item.type}</p>
                   
                   <p className="text-sm font-bold text-gray-900">
-                    Rs. {item.price.toLocaleString()}
+                    ${item.price.toLocaleString()}
                   </p>
                   
                   <button

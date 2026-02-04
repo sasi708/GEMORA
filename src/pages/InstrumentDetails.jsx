@@ -9,6 +9,7 @@ export default function InstrumentDetails() {
   const [product, setProduct] = useState(null);
   const [moreFromStore, setMoreFromStore] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(0);
 
   // Order states
   const [qty, setQty] = useState(1);
@@ -55,14 +56,37 @@ export default function InstrumentDetails() {
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
         {/* LEFT COLUMN – IMAGE + ORDER */}
         <div className="space-y-8">
-          {/* Image */}
+          {/* Main Image */}
           <div className="rounded-2xl bg-gradient-to-br from-gray-900 to-black p-6">
             <img
-              src={product.imageUrl}
+              src={
+                product.images && product.images.length > 0
+                  ? product.images[selectedImage]
+                  : 'https://via.placeholder.com/600x400?text=No+Image+Available'
+              }
               alt={product.name}
               className="mx-auto h-72 object-contain"
             />
           </div>
+
+          {/* Image Thumbnails */}
+          {product.images && product.images.length > 1 && (
+            <div className="flex gap-2 overflow-x-auto">
+              {product.images.map((img, index) => (
+                <img
+                  key={index}
+                  src={img}
+                  alt={`${product.name} ${index + 1}`}
+                  className={`h-20 w-20 object-cover rounded-lg border-2 cursor-pointer transition ${
+                    selectedImage === index
+                      ? 'border-yellow-500'
+                      : 'border-gray-300 hover:border-yellow-400'
+                  }`}
+                  onClick={() => setSelectedImage(index)}
+                />
+              ))}
+            </div>
+          )}
 
           {/* ORDER BOX */}
           <div className="rounded-xl border p-5 space-y-4">
@@ -174,31 +198,16 @@ export default function InstrumentDetails() {
                 "This gemstone features exceptional clarity, vibrant color, and a refined cut."}
             </p>
 
-            <div className="border-t pt-4 space-y-1">
-              <p className="text-sm font-medium">
-                Seller – {product.sellerName || "Kasun Ranathunga"}
-              </p>
-              <p className="text-xs text-gray-500">
-                Location – {product.location || "Colombo, Sri Lanka"}
-              </p>
-              <p className="text-xs text-gray-500">
-                Contact – {product.contact || "071XXXXXXX"}
-              </p>
-            </div>
-
             <div className="grid grid-cols-2 gap-4 text-sm">
               <p>
-                <span className="font-medium">Gem Type:</span>{" "}
-                {product.type || "Yellow Sapphire"}
+                <span className="font-medium">Type:</span>{" "}
+                {product.type || "Instrument"}
               </p>
-              <p>
-                <span className="font-medium">Weight:</span>{" "}
-                {product.weight || "8.23ct"}
-              </p>
+              {/* Removed Weight field for code cleanup */}
             </div>
 
             <p className="text-lg font-semibold">
-              Rs. {product.price?.toLocaleString()}
+              ${product.price?.toLocaleString()}
             </p>
           </div>
 
@@ -216,7 +225,11 @@ export default function InstrumentDetails() {
                   className="rounded-lg border p-3 hover:shadow transition"
                 >
                   <img
-                    src={item.imageUrl}
+                    src={
+                      item.images && item.images.length > 0
+                        ? item.images[0]
+                        : 'https://via.placeholder.com/400?text=No+Image'
+                    }
                     alt={item.name}
                     className="h-24 w-full object-contain"
                   />
@@ -224,7 +237,7 @@ export default function InstrumentDetails() {
                     {item.name}
                   </p>
                   <p className="text-[11px] text-gray-500">
-                    Rs. {item.price?.toLocaleString()}
+                    ${item.price?.toLocaleString()}
                   </p>
                 </Link>
               ))}

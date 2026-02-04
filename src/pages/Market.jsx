@@ -2,6 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
 
+const DUMMY_SELLER = {
+  name: "Gemora Certified Partner",
+  email: "support@gemora.com",
+  location: "Colombo, Sri Lanka",
+  contact: "+94 11 234 5678",
+  profilePic: "https://via.placeholder.com/150",
+};
+
 export default function Market() {
   const [gems, setGems] = useState([]);
   const [filteredGems, setFilteredGems] = useState([]);
@@ -11,13 +19,11 @@ export default function Market() {
 
   // Filters
   const [search, setSearch] = useState("");
-  const [maxPrice, setMaxPrice] = useState(1000000);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const categories = [
     "All",
     "Sapphire",
-    "Ruby",
     "Emerald",
     "Alexandrite",
     "Topaz",
@@ -47,17 +53,15 @@ export default function Market() {
         .toLowerCase()
         .includes(search.toLowerCase());
 
-      const matchesPrice = gem.price <= maxPrice;
-
       const matchesCategory =
         selectedCategory === "All" ||
         gem.name.toLowerCase().includes(selectedCategory.toLowerCase());
 
-      return matchesSearch && matchesPrice && matchesCategory;
+      return matchesSearch && matchesCategory;
     });
 
     setFilteredGems(results);
-  }, [search, maxPrice, selectedCategory, gems]);
+  }, [search, selectedCategory, gems]);
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
@@ -118,21 +122,7 @@ export default function Market() {
             </div>
           </div>
 
-          {/* Price */}
-          <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">
-              Max Price: Rs. {Number(maxPrice).toLocaleString()}
-            </h3>
-            <input
-              type="range"
-              min="1000"
-              max="1000000"
-              step="5000"
-              value={maxPrice}
-              className="w-full accent-yellow-500"
-              onChange={(e) => setMaxPrice(e.target.value)}
-            />
-          </div>
+
         </aside>
 
         {/* GEM GRID */}
@@ -144,7 +134,11 @@ export default function Market() {
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredGems.map((gem) => (
+                {filteredGems.map((gem) => {
+                  const seller = gem.seller || DUMMY_SELLER;
+                  const sellerId = seller?._id || seller?.id || "demo-seller";
+
+                  return (
                   <div
                     key={gem._id}
                     className="bg-white border rounded-2xl p-4 hover:shadow-xl transition"
@@ -162,6 +156,13 @@ export default function Market() {
                       />
                     </div>
 
+                    {/* SELLER INFO */}
+                    <div className="mt-3 mb-2">
+                      <p className="text-xs font-bold text-slate-800">
+                        Seller: {seller?.name || "Verified Seller"}
+                      </p>
+                    </div>
+
                     {/* INFO */}
                     <h2 className="font-bold text-slate-800">
                       {gem.name}
@@ -171,19 +172,10 @@ export default function Market() {
                       {gem.carat} ct · {gem.origin}
                     </p>
 
-                    <p className="text-orange-600 font-bold mt-3 text-lg">
-                      Rs. {gem.price.toLocaleString()}
-                    </p>
-
                     {/* CONTACT NOW */}
                     <button
                       onClick={() => {
-                        if (gem.seller?._id) {
-                          navigate(`/seller/${gem.seller._id}`);
-                        } else {
-                          console.warn("Seller ID not found for gem:", gem);
-                          alert("Seller information not available");
-                        }
+                        navigate(`/seller/${sellerId}`);
                       }}
                       className="mt-4 w-full rounded-full bg-yellow-500 py-2 text-xs font-bold hover:bg-yellow-600 transition"
                     >
@@ -191,7 +183,8 @@ export default function Market() {
                     </button>
 
                   </div>
-                ))}
+                );
+                })}
               </div>
 
               {filteredGems.length === 0 && (
@@ -202,7 +195,6 @@ export default function Market() {
                   <button
                     onClick={() => {
                       setSearch("");
-                      setMaxPrice(1000000);
                       setSelectedCategory("All");
                     }}
                     className="mt-4 text-sm font-bold text-yellow-600 hover:underline"

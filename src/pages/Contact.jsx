@@ -1,45 +1,6 @@
 import { PhoneIcon, MapPinIcon } from "@heroicons/react/24/outline";
 
-import showmyImage from "../assets/showmy.jpg";
-import PasinduImage from "../assets/Pasindu.jpg";
-import banukaImage from "../assets/banuka.jpg";
-import kirellaImage from "../assets/kirella.jpg";
-import DasanImage from "../assets/Dasan.jpg";
-
 export default function Contact() {
-  const founders = [
-    {
-      name: "R.F. Showmy",
-      phone: "0759919192",
-      email: "showmyfathima1204@gmail.com",
-      image: showmyImage,
-    },
-    {
-      name: "K.M.P. Mihikalpa",
-      phone: "0740915987",
-      email: "pasindu86@gmail.com",
-      image: PasinduImage,
-    },
-    {
-      name: "W.S. Banuka Kumara",
-      phone: "0718965741",
-      email: "sasindu013@gmail.com",
-      image: banukaImage,
-    },
-    {
-      name: "K.R.B.M.R.A.B. Kiriella",
-      phone: "0710610969",
-      email: "avishkabandara119@gmail.com",
-      image: kirellaImage,
-    },
-    {
-      name: "D.D.M. Dassanayaka",
-      phone: "0712575781",
-      email: "dasan12@gmail.com",
-      image: DasanImage,
-    },
-  ];
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* HERO SECTION */}
@@ -54,7 +15,7 @@ export default function Contact() {
 
         <div className="relative max-w-7xl mx-auto px-6 h-full flex items-end pb-16">
           <div className="text-white">
-            <h1 className="text-5xl font-bold mb-4">Contact Details</h1>
+            <h1 className="text-5xl font-bold mb-4">Contact Us</h1>
             <div className="flex gap-6 text-sm">
               <div className="flex items-center gap-2">
                 <PhoneIcon className="h-5 w-5" /> Phone
@@ -67,40 +28,76 @@ export default function Contact() {
         </div>
       </div>
 
-      {/* FOUNDERS SECTION */}
+      {/* CONTACT SECTION */}
       <div className="max-w-7xl mx-auto px-6 py-16">
-        <h2 className="text-4xl font-bold mb-10">
-          Founders of <span className="text-yellow-500">GEMORA</span>
-        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div>
+            <h2 className="text-3xl font-bold mb-4">We’re here to help</h2>
+            <p className="text-gray-600 mb-8">
+              Send us a message and our team will get back to you as soon as possible.
+            </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
-          {founders.map((founder, index) => (
-            <div key={index} className="text-center">
-              <img
-                src={founder.image}
-                alt={founder.name}
-                className="mx-auto mb-4 h-32 w-32 rounded-full object-cover border-4 border-yellow-500 shadow-lg"
-              />
-
-              <h3 className="font-semibold text-lg">{founder.name}</h3>
-
-              <div className="mt-2 text-sm space-y-1">
-                <div className="flex justify-center items-center gap-2">
-                  <PhoneIcon className="h-4 w-4 text-yellow-500" />
-                  <a href={`tel:${founder.phone}`} className="hover:text-yellow-500">
-                    {founder.phone}
-                  </a>
-                </div>
-
-                <a
-                  href={`mailto:${founder.email}`}
-                  className="block hover:text-yellow-500"
-                >
-                  {founder.email}
+            <div className="space-y-4 text-sm">
+              <div className="flex items-center gap-3">
+                <PhoneIcon className="h-5 w-5 text-yellow-500" />
+                <a href="tel:+94710000000" className="hover:text-yellow-500">
+                  +94 71 000 0000
                 </a>
               </div>
+              <div className="flex items-center gap-3">
+                <MapPinIcon className="h-5 w-5 text-yellow-500" />
+                <span>Colombo, Sri Lanka</span>
+              </div>
+              <div className="text-gray-500">
+                Support hours: Mon–Sat, 9:00 AM – 6:00 PM
+              </div>
             </div>
-          ))}
+          </div>
+
+          <form className="bg-white rounded-2xl shadow p-6 space-y-4">
+            <div>
+              <label className="text-sm font-medium">Full Name</label>
+              <input
+                type="text"
+                className="mt-1 w-full rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500 outline-none"
+                placeholder="Your name"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Email</label>
+              <input
+                type="email"
+                className="mt-1 w-full rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500 outline-none"
+                placeholder="you@example.com"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Subject</label>
+              <input
+                type="text"
+                className="mt-1 w-full rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500 outline-none"
+                placeholder="How can we help?"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Message</label>
+              <textarea
+                rows="5"
+                className="mt-1 w-full rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500 outline-none"
+                placeholder="Write your message..."
+              />
+            </div>
+
+            <button
+              type="button"
+              className="w-full rounded-lg bg-yellow-500 py-2 text-sm font-semibold text-black hover:bg-yellow-600 transition"
+            >
+              Send Message
+            </button>
+          </form>
         </div>
       </div>
     </div>

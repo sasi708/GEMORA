@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import axios from "axios";
 import AdminSidebar from "../components/AdminSidebar";
 import API from "../api";
 
@@ -65,9 +66,25 @@ export default function AdminInstruments() {
     }
   };
 
-  const deleteItem = async (id) => {
-    alert("Delete not connected yet");
-  };
+   const handleDelete = async (id) => {
+      if (window.confirm("Are you sure you want to delete this instrument?")) {
+         try {
+            const res = await axios.delete(`/api/instruments/${id}`, {
+               headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+               },
+            });
+
+            if (res.status === 200) {
+               setItems((prev) => prev.filter((item) => item._id !== id));
+               alert("Deleted successfully");
+            }
+         } catch (err) {
+            console.error("Delete Error:", err.response);
+            alert(`Failed to delete instrument: ${err.response?.data?.message || "Check your route"}`);
+         }
+      }
+   };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -90,7 +107,16 @@ export default function AdminInstruments() {
                        <td className="py-3">{i.category}</td>
                        <td className="py-3">${i.price}</td>
                        <td className="py-3">{i.countInStock}</td>
-                       <td className="py-3"><button onClick={() => deleteItem(i._id)} className="text-red-500">🗑️</button></td>
+                                  <td className="py-3">
+                                     <button
+                                        onClick={() => handleDelete(i._id)}
+                                        className="h-8 w-8 rounded-full bg-blue-500 text-white hover:bg-blue-600"
+                                        title="Delete"
+                                        type="button"
+                                     >
+                                        🗑️
+                                     </button>
+                                  </td>
                     </tr>
                  ))}
               </tbody>
